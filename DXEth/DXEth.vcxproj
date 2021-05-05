@@ -98,6 +98,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
     <ClCompile>
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\dev\vcpkg\installed\x64-uwp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">D3d12.lib;DXGI.lib;WindowsApp.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -110,6 +111,7 @@
     </Link>
     <Link>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D3d12.lib;DXGI.lib;WindowsApp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\dev\vcpkg\installed\x64-uwp\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">$(OutDir)/Assets/%(Filename).cso</ObjectFileOutput>
@@ -170,6 +172,14 @@
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DXMiner.h" />
     <ClInclude Include="keccak.h" />
+    <ClInclude Include="libdevcore\Common.h" />
+    <ClInclude Include="libdevcore\CommonData.h" />
+    <ClInclude Include="libdevcore\Exceptions.h" />
+    <ClInclude Include="libdevcore\FixedHash.h" />
+    <ClInclude Include="libdevcore\Guards.h" />
+    <ClInclude Include="libdevcore\Log.h" />
+    <ClInclude Include="libdevcore\Terminal.h" />
+    <ClInclude Include="libdevcore\vector_ref.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="App.h">
       <DependentUpon>App.xaml</DependentUpon>
@@ -204,6 +214,9 @@
     <ClCompile Include="Constants.cpp" />
     <ClCompile Include="DXMiner.cpp" />
     <ClCompile Include="keccak.cpp" />
+    <ClCompile Include="libdevcore\CommonData.cpp" />
+    <ClCompile Include="libdevcore\FixedHash.cpp" />
+    <ClCompile Include="libdevcore\Log.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

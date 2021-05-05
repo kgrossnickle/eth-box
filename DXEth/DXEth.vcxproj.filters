@@ -18,6 +18,15 @@
     <ClCompile Include="DXMiner.cpp" />
     <ClCompile Include="Constants.cpp" />
     <ClCompile Include="keccak.cpp" />
+    <ClCompile Include="libdevcore\CommonData.cpp">
+      <Filter>libdevcore</Filter>
+    </ClCompile>
+    <ClCompile Include="libdevcore\FixedHash.cpp">
+      <Filter>libdevcore</Filter>
+    </ClCompile>
+    <ClCompile Include="libdevcore\Log.cpp">
+      <Filter>libdevcore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -25,6 +34,30 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="keccak.h" />
+    <ClInclude Include="libdevcore\Common.h">
+      <Filter>libdevcore</Filter>
+    </ClInclude>
+    <ClInclude Include="libdevcore\CommonData.h">
+      <Filter>libdevcore</Filter>
+    </ClInclude>
+    <ClInclude Include="libdevcore\Exceptions.h">
+      <Filter>libdevcore</Filter>
+    </ClInclude>
+    <ClInclude Include="libdevcore\FixedHash.h">
+      <Filter>libdevcore</Filter>
+    </ClInclude>
+    <ClInclude Include="libdevcore\Guards.h">
+      <Filter>libdevcore</Filter>
+    </ClInclude>
+    <ClInclude Include="libdevcore\Log.h">
+      <Filter>libdevcore</Filter>
+    </ClInclude>
+    <ClInclude Include="libdevcore\Terminal.h">
+      <Filter>libdevcore</Filter>
+    </ClInclude>
+    <ClInclude Include="libdevcore\vector_ref.h">
+      <Filter>libdevcore</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Wide310x150Logo.scale-200.png">
@@ -59,6 +92,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{0ef5a85f-6781-41fb-a634-e88db6c5cd37}</UniqueIdentifier>
       <Extensions>hlsl;hlsli</Extensions>
+    </Filter>
+    <Filter Include="libdevcore">
+      <UniqueIdentifier>{3a2a3d77-9ed3-4121-91a9-9a4afa354219}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
