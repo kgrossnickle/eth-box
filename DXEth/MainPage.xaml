@@ -1,0 +1,23 @@
+﻿<Page
+    x:Class="DXEth.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DXEth"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Pivot x:Name="pivot" Title="DXEth">
+        <PivotItem x:Name="controlsPivotItem" Header="Controls">
+            <StackPanel Spacing="8" HorizontalAlignment="Left">
+                <ComboBox x:Name="devicesComboBox" Header="Device" Width="300" />
+                <TextBox x:Name="poolAddressTextBox" Header="Pool Address" Width="300" />
+                <TextBox x:Name="usernameTextBox" Header="Username" Width="300" />
+                <PasswordBox x:Name="passwordBox" Header="Password" Width="300" />
+                <Button x:Name="myButton" Click="ClickHandler">Start</Button>
+            </StackPanel>
+        </PivotItem>
+        <PivotItem x:Name="statusPivotItem" Header="Status">
+            <TextBlock Text="urgent emails go here." />
+        </PivotItem>
+    </Pivot>
+</Page>
