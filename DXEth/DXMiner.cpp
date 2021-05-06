@@ -15,7 +15,7 @@
 
 #include "Constants.h"
 #include "keccak.h"
-
+#include "libdevcore/FixedHash.h"
 
 #define PUT_GENERIC_COM_PTR(x) __uuidof(x), x.put_void()
 #define COMPUTE_SHADER_NUM_THREADS 16
@@ -31,7 +31,7 @@ namespace winrt::DXEth {
 	};
 
 	struct MineParam {
-		uint32_t target[8];
+		uint64_t target;
 		uint32_t header[8];
 		uint32_t startNonce[2];
 		uint32_t numDatasetElements;
@@ -47,7 +47,7 @@ namespace winrt::DXEth {
 	};
 
 	DXMiner::DXMiner(size_t index) {
-		assert(sizeof(MineParam) == 80);
+		//assert(sizeof(MineParam) == 80);
 #if defined(_DEBUG)
 		// check_hresult(D3D12GetDebugInterface(PUT_GENERIC_COM_PTR(m_debugController)));
 		// m_debugController->EnableDebugLayer();
@@ -257,9 +257,29 @@ namespace winrt::DXEth {
 			hard_coded_target[6] = 0;
 			hard_coded_target[7] = 0;*/
 			//param.target = hard_coded_target;
-			memcpy(param.target, hard_coded_target.data(), hard_coded_target.size());
-			//memcpy(param.target, target.data(), target.size());
-			memcpy(param.header, header.data(), header.size());
+			std::string header_hash = "4db8c3d89b7de6ddb733a736d664ebda3b6c5c5131f406df463e8f83d7805283";
+			std::string targ_hash =   "009999407a5318223df61aeabb86646833530dcccfb8fecb21b4e19d6494d7a0";
+
+			int x;
+			std::array<uint8_t, 32> header_arr;
+			for (size_t i = 0; i < header_arr.size(); i++) {
+				std::sscanf(&header_hash.c_str()[i * 2], "%02x", &x);
+				header_arr[i] = (uint8_t)x;
+			}
+
+			if (targ_hash.size() != 64) {
+				throw std::runtime_error("bad seed size");
+			}
+			std::array<uint8_t, 32> targ_arr;
+			for (size_t i = 0; i < targ_arr.size(); i++) {
+				std::sscanf(&targ_hash.c_str()[i * 2], "%02x", &x);
+				targ_arr[i] = (uint8_t)x;
+			}
+			auto boundary = dev::h256(targ_hash);
+			uint64_t upper64OfBoundary = (uint64_t)(dev::u64)((dev::u256)boundary >> 192);
+			param.target = upper64OfBoundary;
+			//memcpy(param.target, upper64OfBoundary, targ_arr.size());
+			memcpy(param.header, header_arr.data(), header_arr.size());
 
 
 			for (uint64_t i = 0; i < count; i += m_batchSize) {

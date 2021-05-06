@@ -1,7 +1,7 @@
 #include "ETHash.hlsli"
 
 cbuffer param : register(b0) {
-    uint4 target[2];
+    uint64_t target;
     uint4 header[2];
     uint2 startNonce;
     uint numDatasetElements;
@@ -84,7 +84,7 @@ void main(uint3 tid : SV_DispatchThreadID) {
     uint hashResult[8];
     uint headerNonce[10]; // [header .. nonce]
     bool found;
-    
+    mineResult[0].nonces[0].nonce[0] = 9;
     //uint rem_idx = tid.x % MAX_FOUND;
     //InterlockedAdd(mineResult[0].count, 1, foundIndex);
     index = tid.x;
@@ -111,13 +111,17 @@ void main(uint3 tid : SV_DispatchThreadID) {
         hashResult[i] = 0;
 
     
+    mineResult[0].nonces[0].nonce[1] = asuint(hashResult[0]);
     //2-3 MH drop here
     hashimoto(hashResult, headerNonce);
     
     found = false;
-    for (i = 0; i < 8; i++)
-        found = found || hashResult[i] < target[i/4][i%4];
+    // ORIG
+    //for (i = 0; i < 8; i++)
+    //found = found || hashResult[i] < target; target[i/4][i%4];
     
+    //NEW
+    found = asuint( hashResult[0] ) < target;
     //if (index == 0 && debug) {
     //    for (i = 0; i < 8; i++)
     //        debug_buffer[index * 8 + i] = result[i];
@@ -128,7 +132,7 @@ void main(uint3 tid : SV_DispatchThreadID) {
     
 
     //25 MH drop here !!! 41-> 10
-    //InterlockedAdd(mineResult[0].count, 1, foundIndex);
+    InterlockedAdd(mineResult[0].count, 1, foundIndex);
      
     //NOTE THIS IS BROKEN, need some sort of interprocess break or count add etc.
     //
