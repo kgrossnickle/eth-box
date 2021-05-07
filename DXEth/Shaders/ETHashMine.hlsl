@@ -1,7 +1,7 @@
 #include "ETHash.hlsli"
 
 cbuffer param : register(b0) {
-    uint64_t target;
+    uint4 target[2];
     uint4 header[2];
     uint2 startNonce;
     uint numDatasetElements;
@@ -77,16 +77,14 @@ void hashimoto(out uint result[8], uint headerNonce[10]) {
 
 //uniform uint debug : register(b0);
 //RWStructuredBuffer<uint> debug_buffer : register(u6);
-
-[numthreads(NUM_THREADS, 1, 1)]
+// SHOULD BE NUM_THREADS , testibng
+[numthreads(1, 1, 1)]
 void main(uint3 tid : SV_DispatchThreadID) {
     uint i, index, foundIndex;
     uint hashResult[8];
     uint headerNonce[10]; // [header .. nonce]
     bool found;
-    mineResult[0].nonces[0].nonce[0] = 9;
     //uint rem_idx = tid.x % MAX_FOUND;
-    //InterlockedAdd(mineResult[0].count, 1, foundIndex);
     index = tid.x;
     if (index == 0 && init != 0) {
         mineResult[0].count = 0;
@@ -100,28 +98,50 @@ void main(uint3 tid : SV_DispatchThreadID) {
         headerNonce[i + 8] = startNonce[i];
     
     //3 MH drop here!!
-    headerNonce[8] = tid.x;
+    //headerNonce[8] += index;
     
     //3 MH drop here 37MH at last check
-    if (headerNonce[8] < startNonce[0])
-        headerNonce[9]++;
+    //if (headerNonce[8] < startNonce[0])
+    //    headerNonce[9]++;
     
     //41 MH here last?? ok...
     for (i = 0; i < 8; i++)
         hashResult[i] = 0;
 
     
-    mineResult[0].nonces[0].nonce[1] = asuint(hashResult[0]);
     //2-3 MH drop here
     hashimoto(hashResult, headerNonce);
     
+    for (i = 0; i < 8; i++)
+        mineResult[0].nonces[i].nonce[0] = hashResult[i];
+    for (i = 0; i < 8; i++) {
+        mineResult[0].nonces[i].nonce[1] = header[i / 4][i % 4];
+    }
+        
+    return;
+
     found = false;
+
     // ORIG
-    //for (i = 0; i < 8; i++)
-    //found = found || hashResult[i] < target; target[i/4][i%4];
-    
+    for (i = 0; i < 8; i++)
+       found = found || hashResult[i] < target[i/4][i%4];
     //NEW
-    found = asuint( hashResult[0] ) < target;
+    // 
+    /*for (i = 0; i < 8; i++) {
+        if (hashResult[i] < target[i/4][i%4] ) {
+            found = true;
+            break;
+        }
+        else if (hashResult[i] > target[i / 4][i % 4]) {
+            found = false;
+            break;
+        }
+        // if its equal we keep incrementing to i=8 to see...
+    }*/
+
+    //NEW
+    //found =  hashResult[0]  < target;
+    
     //if (index == 0 && debug) {
     //    for (i = 0; i < 8; i++)
     //        debug_buffer[index * 8 + i] = result[i];
@@ -130,6 +150,7 @@ void main(uint3 tid : SV_DispatchThreadID) {
     if (!found)
         return;
     
+    //mineResult[0].nonces[0].nonce[0] = 999;
 
     //25 MH drop here !!! 41-> 10
     InterlockedAdd(mineResult[0].count, 1, foundIndex);
@@ -140,8 +161,8 @@ void main(uint3 tid : SV_DispatchThreadID) {
     // 
     // 
     //Both below are -2 MH.. not bad
-    if (foundIndex >= MAX_FOUND)
-        return;
+    //if (foundIndex >= MAX_FOUND)
+    //    return;
     // can overwrite nonce to make invalid, we just take that risk...
     for (i = 0; i < 2; i++)
         mineResult[0].nonces[0].nonce[i] = headerNonce[i + 8];

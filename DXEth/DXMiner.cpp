@@ -1,4 +1,5 @@
 #include "pch.h"
+
 #include "DXMiner.h"
 #include <iostream>
 
@@ -15,7 +16,23 @@
 
 #include "Constants.h"
 #include "keccak.h"
-#include "libdevcore/FixedHash.h"
+#include"libdevcore/FixedHash.cpp"
+#include <codecvt>
+std::wstring s2ws(const std::string& str)
+{
+	int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
+	std::wstring wstrTo(size_needed, 0);
+	MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
+	return wstrTo;
+}
+
+unsigned long long int hiloint2uint64(int h, int l)
+{
+	int combined[] = { h, l };
+
+	return *reinterpret_cast<unsigned long long int*>(combined);
+}
+
 
 #define PUT_GENERIC_COM_PTR(x) __uuidof(x), x.put_void()
 #define COMPUTE_SHADER_NUM_THREADS 16
@@ -31,7 +48,7 @@ namespace winrt::DXEth {
 	};
 
 	struct MineParam {
-		uint64_t target;
+		uint32_t target[8];
 		uint32_t header[8];
 		uint32_t startNonce[2];
 		uint32_t numDatasetElements;
@@ -228,6 +245,13 @@ namespace winrt::DXEth {
 		uint64_t startNonce,
 		uint64_t count
 	) {
+		epoch = 412;
+		double d = 7379509247450882;
+		std::string real_target = dev::getTargetFromDiff(d);
+		OutputDebugString(L"\nreal targ:\n");
+		OutputDebugString(s2ws(real_target).c_str());
+		system("pause");
+		exit(1);
 		prepareEpoch(epoch);
 		size_t hashBytes = 64;
 		size_t datasetSize = constants.GetDatasetSize(epoch);
@@ -246,45 +270,38 @@ namespace winrt::DXEth {
 			MineParam param = {};
 			param.numDatasetElements = numDatasetElements;
 			param.init = 1;
-			std::array<uint8_t, 8> hard_coded_target;
-			hard_coded_target[0] = 0;
-			hard_coded_target[1] = 9;
-			/*
-			hard_coded_target[2] = 0;
-			hard_coded_target[3] = 0;
-			hard_coded_target[4] = 0;
-			hard_coded_target[5] = 0;
-			hard_coded_target[6] = 0;
-			hard_coded_target[7] = 0;*/
-			//param.target = hard_coded_target;
-			std::string header_hash = "4db8c3d89b7de6ddb733a736d664ebda3b6c5c5131f406df463e8f83d7805283";
-			std::string targ_hash =   "009999407a5318223df61aeabb86646833530dcccfb8fecb21b4e19d6494d7a0";
 
-			int x;
-			std::array<uint8_t, 32> header_arr;
-			for (size_t i = 0; i < header_arr.size(); i++) {
-				std::sscanf(&header_hash.c_str()[i * 2], "%02x", &x);
-				header_arr[i] = (uint8_t)x;
-			}
+			// Real block info:
+			// header = 	0xe3c39c67f1f20865aede2e504364f95ff64c5a32e0cef39519ddbd472c96d36e
+			// target = 0x00000000000baef6895d630131521d65d984555906990f43f352be4350291f92  IS OLD TARGET, should work?
+			// real_nonce = 0xc03a200babf336d4 
+			// block num = 12388085
+			// epoch num = 412 
+			// output hash should be = 0x2322c23718913d9af4f9f78f6eb61f9041844d104e2f116f09409e29dc1b51f9
 
-			if (targ_hash.size() != 64) {
-				throw std::runtime_error("bad seed size");
-			}
-			std::array<uint8_t, 32> targ_arr;
-			for (size_t i = 0; i < targ_arr.size(); i++) {
-				std::sscanf(&targ_hash.c_str()[i * 2], "%02x", &x);
-				targ_arr[i] = (uint8_t)x;
-			}
+			startNonce = 0xc03a200babf336d4;
+			std::string header_hash = "0xe3c39c67f1f20865aede2e504364f95ff64c5a32e0cef39519ddbd472c96d36e";
+			std::string targ_hash =   "0x00000000000baef6895d630131521d65d984555906990f43f352be4350291f92";
+
 			auto boundary = dev::h256(targ_hash);
-			uint64_t upper64OfBoundary = (uint64_t)(dev::u64)((dev::u256)boundary >> 192);
-			param.target = upper64OfBoundary;
-			//memcpy(param.target, upper64OfBoundary, targ_arr.size());
-			memcpy(param.header, header_arr.data(), header_arr.size());
+			const auto h256_header = h256(header_hash);
+			//uint64_t upper64OfBoundary = (uint64_t)(dev::u64)((dev::u256)boundary >> 192);
+			OutputDebugString(L"\ntarget going in:\n");
+			OutputDebugString(s2ws(dev::toString(boundary)).c_str());
+			OutputDebugString(L"\ntarg arr values going in :\n");
+			for (int i = 0; i < 32; i++) {
+				OutputDebugString(std::to_wstring(boundary[i]).c_str());
+			}
+			OutputDebugString(L"\n");
+			memcpy(param.target, boundary.data(), boundary.size);
+			memcpy(param.header, h256_header.data(), h256_header.size );
+			//memcpy(param.target, h256_target.data(), h256_target.size );
+			//memcpy(param.header, header.data(), header.size());
 
 
 			for (uint64_t i = 0; i < count; i += m_batchSize) {
-				param.startNonce[0] = (startNonce + i) & ((1ULL << 32) - 1);
-				param.startNonce[1] = (startNonce + i) >> 32;
+				param.startNonce[0] = (startNonce & 0xFFFFFFFF);//(startNonce + i) & ((1ULL << 32) - 1);
+				param.startNonce[1] = (startNonce & 0xFFFFFFFF00000000ULL) >> 32; ;//(startNonce + i) >> 32;
 				check_hresult(m_d3d12ComputeCommandAllocator->Reset());
 				check_hresult(m_d3d12ComputeCommandList->Reset(m_d3d12ComputeCommandAllocator.get(), m_minePipelineState.get()));
 				m_d3d12ComputeCommandList->SetPipelineState(m_minePipelineState.get());
@@ -297,9 +314,13 @@ namespace winrt::DXEth {
 
 				//orig = m_batchSize / COMPUTE_SHADER_NUM_THREADS
 				int num_threads = m_batchSize / COMPUTE_SHADER_NUM_THREADS;// 32;
+
+				// CHANGE BACK AFTER DEBUG!!
+
+				num_threads = 1;
 				//OutputDebugString(L"Num threads is \n");
 				//OutputDebugString(std::to_wstring(num_threads).c_str());
-				m_d3d12ComputeCommandList->Dispatch(m_batchSize / COMPUTE_SHADER_NUM_THREADS, 1, 1);
+				m_d3d12ComputeCommandList->Dispatch(num_threads, 1, 1);
 				param.init = 0;
 
 				// Schedule to copy the data to the default buffer to the readback buffer.
@@ -323,7 +344,33 @@ namespace winrt::DXEth {
 
 		MineResult* md = nullptr;
 		check_hresult(m_resultReadbackBuffer->Map(0, nullptr, reinterpret_cast<void**>(&md)));
+		
+		std::array<uint32_t, 8> target_out_pre;
+		//uint32_t* target_out = new uint32_t[8];
+		for (int i = 0; i < 8; i++) {
+			target_out_pre[i] = md[0].nonces[i].nonce[1];
+		}
+		std::array<uint8_t, 32> target_out;
+		memcpy(target_out.data(), target_out_pre.data(), 32);
+		auto target_out256 = h256(target_out.data(), h256::ConstructFromPointer);
 
+		OutputDebugString(L"\n prev parent hash coming out:\n");
+		OutputDebugString(s2ws(dev::toString(target_out256)).c_str());
+
+
+		std::array<uint32_t, 8> hash_out_pre;
+		for (int i = 0; i < 8; i++) {
+			hash_out_pre[i] = md[0].nonces[i].nonce[0];
+		}
+		std::array<uint8_t, 32> hash_out;
+		memcpy(hash_out.data(), hash_out_pre.data(), 32);
+		OutputDebugString(L"\n");
+		auto hash_out256 = h256(hash_out.data(), h256::ConstructFromPointer);		
+		OutputDebugString(L"\nfinal hash coming out:\n");
+		OutputDebugString(s2ws(dev::toString(hash_out256)).c_str());
+		OutputDebugString(L"\n");
+
+		/*
 		OutputDebugString(L"count of nonces from res buffer \n");
 		OutputDebugString(std::to_wstring(md[0].count).c_str());
 		OutputDebugString(L"\nfirst nonce \n");
@@ -331,6 +378,7 @@ namespace winrt::DXEth {
 		OutputDebugString(L" ");
 		OutputDebugString(std::to_wstring(md[0].nonces[0].nonce[1]).c_str());
 		OutputDebugString(L"\n");
+		*/
 		m_resultReadbackBuffer->Unmap(0, nullptr);
 
 		auto endTime = std::chrono::high_resolution_clock::now();

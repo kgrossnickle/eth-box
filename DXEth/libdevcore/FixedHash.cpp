@@ -26,4 +26,4 @@
 using namespace std;
 using namespace dev;
 
-std::random_device dev::s_fixedHashEngine;
+//std::random_device dev::s_fixedHashEngine;
