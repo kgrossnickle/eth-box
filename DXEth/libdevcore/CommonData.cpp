@@ -84,7 +84,9 @@ std::string dev::getTargetFromDiff(double diff, HexPrefix _prefix)
 {
     using namespace boost::multiprecision;
     using BigInteger = boost::multiprecision::cpp_int;
-
+    BigInteger bi_diff = static_cast<BigInteger>(diff);
+    h256 boundary = h256{ u256((u512(1) << 256) / bi_diff) };
+    return dev::toString(boundary);
     static BigInteger base("0x00000000ffff0000000000000000000000000000000000000000000000000000");
     BigInteger product;
 

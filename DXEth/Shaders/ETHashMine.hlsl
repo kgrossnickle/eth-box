@@ -16,7 +16,6 @@ struct result {
     } nonces[MAX_FOUND];
 };
 
-
 RWStructuredBuffer<struct result> mineResult : register(u4);
 
 // headerNonce is [header .. nonce]
@@ -41,6 +40,8 @@ void hashimoto(out uint result[8], uint headerNonce[10]) {
     mix1 = seed;
 
     // [unroll(ACCESSES)]
+    //ORIGINAL
+    /*
     [unroll(ACCESSES)]
     for (i = 0; i < ACCESSES; i++) {
         j = i % 32;
@@ -48,12 +49,32 @@ void hashimoto(out uint result[8], uint headerNonce[10]) {
         // parentIndex = fnv(seed[0] ^ i, j < 16 ? mix0[j % 16] : mix1[j % 16]) % (128 / 2);
         // note, this access is 1024 bits / 128 bytes / 32 words wide
         datasetLoad2(temp0, temp1, parentIndex * 2);
-        // datasetLoad(temp0, parentIndex * 2);
-        // datasetLoad(temp1, parentIndex * 2 + 1);
-        
         fnvHash(mix0, temp0);
         fnvHash(mix1, temp1);
     }
+    */
+    [unroll(ACCESSES)]
+    for (i = 0; i < ACCESSES; i++) {
+        j = i % 32;
+        parentIndex = fnv(i ^ seed[0] , j < 16 ? mix0[j % 16] : mix1[j % 16]) % (numDatasetElements / 2);
+        // parentIndex = fnv(seed[0] ^ i, j < 16 ? mix0[j % 16] : mix1[j % 16]) % (128 / 2);
+        // note, this access is 1024 bits / 128 bytes / 32 words wide
+        //datasetLoad(temp0, parentIndex);
+        //datasetLoad2(temp0, temp1, parentIndex * 2);
+        datasetLoad(temp0, parentIndex * 2);
+        datasetLoad(temp1, (parentIndex * 2) + 1);
+        fnvHash(mix0, temp0);
+        fnvHash(mix1, temp1);
+    }
+    //UP TO HERE CORRECT! PREV CORRECT CHECKING BELOW 
+    /*
+    for (i = 0; i < 16; i++)
+        mineResult[0].nonces[i].nonce[0] = temp1[i];
+    
+
+    mineResult[0].nonces[16].nonce[0] = ACCESSES;
+    mineResult[0].nonces[17].nonce[0] = parentIndex;
+    */
 
     // compress mix into 256 bits
     for (i = 0; i < 4; i++) {
@@ -72,99 +93,76 @@ void hashimoto(out uint result[8], uint headerNonce[10]) {
     for (i = 16; i < 24; i++)
         concat[i] = digest[i - 16];
 
+    //MIX DIGEST CORRECT UP TO HERE, OLD CHECK CODE
+    //for (i = 0; i < 8; i++)
+    //    mineResult[0].nonces[i].nonce[0] = digest[i];
+
     keccak_256_768(result, concat);
 }
-
-//uniform uint debug : register(b0);
-//RWStructuredBuffer<uint> debug_buffer : register(u6);
-// SHOULD BE NUM_THREADS , testibng
+//need to put back to NUM_THREADS
 [numthreads(1, 1, 1)]
 void main(uint3 tid : SV_DispatchThreadID) {
     uint i, index, foundIndex;
     uint hashResult[8];
     uint headerNonce[10]; // [header .. nonce]
     bool found;
-    //uint rem_idx = tid.x % MAX_FOUND;
+
+    //for (i = 0; i < 8; i++)
+    //    mineResult[0].nonces[i].nonce[0] = header[i / 4][i % 4];
+    //return;
+
     index = tid.x;
     if (index == 0 && init != 0) {
         mineResult[0].count = 0;
     }
-    
+
     for (i = 0; i < 8; i++)
-        headerNonce[i] = header[i/4][i%4];
-    
-    // 5 MH drop here. 43 MH on local after this loop
+        headerNonce[i] = header[i / 4][i % 4];
+
     for (i = 0; i < 2; i++)
         headerNonce[i + 8] = startNonce[i];
-    
-    //3 MH drop here!!
-    //headerNonce[8] += index;
-    
-    //3 MH drop here 37MH at last check
-    //if (headerNonce[8] < startNonce[0])
-    //    headerNonce[9]++;
-    
-    //41 MH here last?? ok...
+
+    headerNonce[8] += index;
+    if (headerNonce[8] < startNonce[0])
+        headerNonce[9]++;
+
     for (i = 0; i < 8; i++)
         hashResult[i] = 0;
 
-    
-    //2-3 MH drop here
     hashimoto(hashResult, headerNonce);
-    
     for (i = 0; i < 8; i++)
         mineResult[0].nonces[i].nonce[0] = hashResult[i];
-    for (i = 0; i < 8; i++) {
-        mineResult[0].nonces[i].nonce[1] = header[i / 4][i % 4];
-    }
-        
     return;
-
-    found = false;
-
-    // ORIG
     for (i = 0; i < 8; i++)
-       found = found || hashResult[i] < target[i/4][i%4];
-    //NEW
-    // 
-    /*for (i = 0; i < 8; i++) {
-        if (hashResult[i] < target[i/4][i%4] ) {
+        mineResult[0].nonces[i].nonce[0] = hashResult[i];
+    return;
+    found = false;
+    for (i = 0; i < 8; i++)
+        found = found || hashResult[i] < target[i / 4][i % 4];
+    /*
+    for (i = 0; i < 8; i++) {
+        if (hashResult[i] < target[i / 4][i % 4]) {
             found = true;
             break;
         }
-        else if (hashResult[i] > target[i / 4][i % 4]) {
+        if (hashResult[i] > target[i / 4][i % 4]) {
             found = false;
             break;
         }
-        // if its equal we keep incrementing to i=8 to see...
     }*/
 
-    //NEW
-    //found =  hashResult[0]  < target;
-    
-    //if (index == 0 && debug) {
-    //    for (i = 0; i < 8; i++)
-    //        debug_buffer[index * 8 + i] = result[i];
-    //}
+
+    //for (i = 0; i < 8; i++)
+    //    if  hashResult[i] < target[i / 4][i % 4]{}
 
     if (!found)
         return;
-    
-    //mineResult[0].nonces[0].nonce[0] = 999;
 
-    //25 MH drop here !!! 41-> 10
     InterlockedAdd(mineResult[0].count, 1, foundIndex);
-     
-    //NOTE THIS IS BROKEN, need some sort of interprocess break or count add etc.
-    //
-    // Maybe TID / 16 
-    // 
-    // 
-    //Both below are -2 MH.. not bad
-    //if (foundIndex >= MAX_FOUND)
-    //    return;
-    // can overwrite nonce to make invalid, we just take that risk...
+
+    if (foundIndex >= MAX_FOUND)
+        return;
+
     for (i = 0; i < 2; i++)
         mineResult[0].nonces[0].nonce[i] = headerNonce[i + 8];
 }
-

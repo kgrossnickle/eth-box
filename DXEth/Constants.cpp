@@ -4,7 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-
+#include<libdevcore/FixedHash.h>
 using namespace winrt;
 
 namespace winrt::DXEth {
@@ -34,7 +34,10 @@ namespace winrt::DXEth {
 				std::sscanf(&line.c_str()[i * 2], "%02x", &x);
 				arr[i] = (uint8_t)x;
 			}
-			m_seeds.push_back(arr);
+
+			auto seed_h256 = dev::h256(line);
+
+			m_seeds.push_back(seed_h256);
 		}
 		cacheSizesStream.close();
 	}
@@ -55,7 +58,7 @@ namespace winrt::DXEth {
 		return m_datasetSizes[epoch];
 	}
 
-	std::array<uint8_t, 32> Constants::GetSeed(int epoch) {
+	dev::h256 Constants::GetSeed(int epoch) {
 		if (epoch < 0 || epoch >= m_cacheSizes.size())
 			throw std::range_error("Epoch out of range");
 		return m_seeds[epoch];

@@ -12,7 +12,7 @@
 #define CACHE_ROUNDS 3
 #define HASH_WORDS 16
 #define ACCESSES 64
-#define MAX_FOUND 16
+#define MAX_FOUND 32
 
 // NOTE: we're using uint2 as a 64bit integer in most cases
 // this is little endian, i.e.
