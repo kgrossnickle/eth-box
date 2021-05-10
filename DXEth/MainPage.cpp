@@ -22,6 +22,9 @@ namespace winrt::DXEth::implementation
         for (auto& device : deviceList) {
             devicesComboBox().Items().Append(PropertyValue::CreateString(wcharConv.from_bytes(device)));
         }
+
+        auto x = constants.GetCacheSize(0);
+        auto miner = DXMiner(0);
     }
 
     int32_t MainPage::MyProperty()

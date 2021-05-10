@@ -18,6 +18,26 @@ struct result {
 
 RWStructuredBuffer<struct result> mineResult : register(u4);
 
+uint le_to_be(uint num) {
+
+    uint b0, b1, b2, b3;
+    uint tmp;
+    uint tmp2;
+    uint res;
+    b0 = (num >> 24);
+    b1 = ((num << 8) & 0x00ff0000);
+    b2 = ((num >> 8) & 0x0000ff00);
+    b3 = (num << 24);
+
+    b0 = b0 | b1;
+    b1 = b2 | b3;
+    tmp = b1 - 1;
+    tmp = tmp + 1;
+    tmp2 = b0 + 1;
+    tmp2 = b0 - 1;
+    res = tmp2 | tmp;
+    return  res + 1;
+}
 // headerNonce is [header .. nonce]
 void hashimoto(out uint result[8], uint headerNonce[10]) {
     uint i, j, parentIndex;
@@ -56,7 +76,7 @@ void hashimoto(out uint result[8], uint headerNonce[10]) {
     [unroll(ACCESSES)]
     for (i = 0; i < ACCESSES; i++) {
         j = i % 32;
-        parentIndex = fnv(i ^ seed[0] , j < 16 ? mix0[j % 16] : mix1[j % 16]) % (numDatasetElements / 2);
+        parentIndex = fnv(i ^ seed[0], j < 16 ? mix0[j % 16] : mix1[j % 16]) % (numDatasetElements / 2);
         // parentIndex = fnv(seed[0] ^ i, j < 16 ? mix0[j % 16] : mix1[j % 16]) % (128 / 2);
         // note, this access is 1024 bits / 128 bytes / 32 words wide
         //datasetLoad(temp0, parentIndex);
@@ -70,7 +90,7 @@ void hashimoto(out uint result[8], uint headerNonce[10]) {
     /*
     for (i = 0; i < 16; i++)
         mineResult[0].nonces[i].nonce[0] = temp1[i];
-    
+
 
     mineResult[0].nonces[16].nonce[0] = ACCESSES;
     mineResult[0].nonces[17].nonce[0] = parentIndex;
@@ -98,19 +118,43 @@ void hashimoto(out uint result[8], uint headerNonce[10]) {
     //    mineResult[0].nonces[i].nonce[0] = digest[i];
 
     keccak_256_768(result, concat);
+    for (i = 0; i < 8; i++) {
+        result[i] = le_to_be(result[i]);
+    }
 }
+void uint32_to_8(uint32_t x[8], out uint lit_int[32]) {
+    uint i;
+    for( i = 0; i < 32; i+=4){
+        lit_int[i] = (uint)(x[i] >> 0);
+        lit_int[i+1] = (uint)(x[i] >> 8);
+        lit_int[i+2] = (uint)(x[i] >> 16);
+        lit_int[i+3] = (uint)(x[i] >> 24);
+    }
+}
+void targ_to_uint8s(uint4 target[2], out uint lit_int[32]) {
+    uint t[8];
+    uint i;
+    for (i = 0; i < 8; i++) {
+        t[i] = target[i / 4][i % 4];
+    }
+    uint32_to_8(t, lit_int);
+}
+//x = ( x >> 24 ) | (( x << 8) & 0x00ff0000 )| ((x >> 8) & 0x0000ff00) | ( x << 24)  ; 
+
+
+
 //need to put back to NUM_THREADS
-[numthreads(1, 1, 1)]
+[numthreads(NUM_THREADS, 1, 1)]
 void main(uint3 tid : SV_DispatchThreadID) {
     uint i, index, foundIndex;
     uint hashResult[8];
+    uint be_target[8];
     uint headerNonce[10]; // [header .. nonce]
     bool found;
 
-    //for (i = 0; i < 8; i++)
-    //    mineResult[0].nonces[i].nonce[0] = header[i / 4][i % 4];
-    //return;
-
+    for (i = 0; i < 8; i++) {
+        be_target[i] = le_to_be(target[i / 4][i % 4]);
+    }
     index = tid.x;
     if (index == 0 && init != 0) {
         mineResult[0].count = 0;
@@ -130,39 +174,30 @@ void main(uint3 tid : SV_DispatchThreadID) {
         hashResult[i] = 0;
 
     hashimoto(hashResult, headerNonce);
-    for (i = 0; i < 8; i++)
-        mineResult[0].nonces[i].nonce[0] = hashResult[i];
-    return;
-    for (i = 0; i < 8; i++)
-        mineResult[0].nonces[i].nonce[0] = hashResult[i];
-    return;
+    
     found = false;
-    for (i = 0; i < 8; i++)
-        found = found || hashResult[i] < target[i / 4][i % 4];
-    /*
+    //replace for loop with uint256 hash < uint256 target
     for (i = 0; i < 8; i++) {
-        if (hashResult[i] < target[i / 4][i % 4]) {
+        if ((hashResult[i]) < be_target[i]) {
             found = true;
             break;
         }
-        if (hashResult[i] > target[i / 4][i % 4]) {
+        if ((hashResult[i]) > be_target[i]) {
             found = false;
             break;
         }
-    }*/
-
-
-    //for (i = 0; i < 8; i++)
-    //    if  hashResult[i] < target[i / 4][i % 4]{}
-
+    }
     if (!found)
         return;
 
     InterlockedAdd(mineResult[0].count, 1, foundIndex);
-
-    if (foundIndex >= MAX_FOUND)
-        return;
-
     for (i = 0; i < 2; i++)
         mineResult[0].nonces[0].nonce[i] = headerNonce[i + 8];
+    
+    //THis doesnt error, might be faster to leave out
+    //if (foundIndex >= MAX_FOUND)
+    //    return;
+
+    //change index below, debugging
+
 }
