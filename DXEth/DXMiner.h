@@ -11,7 +11,7 @@ namespace winrt::DXEth {
 	class DXMiner {
 	public:
 		DXMiner(size_t deviceIndex);
-		std::vector<uint64_t> mine(
+		void mine(
 			int epoch,
 			std::array<uint8_t, 32> target,
 			std::array<uint8_t, 32> header,

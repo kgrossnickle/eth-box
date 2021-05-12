@@ -125,7 +125,7 @@ namespace winrt::DXEth {
 #endif
 
 		{ // create command queue for compute
-			D3D12_COMMAND_QUEUE_DESC desc = {};
+			D3D12_COMMAND_QUEUE_DESC desc = { };
 			desc.Type = D3D12_COMMAND_LIST_TYPE_COMPUTE;
 			desc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
 			desc.Flags = D3D12_COMMAND_QUEUE_FLAG_DISABLE_GPU_TIMEOUT;
@@ -244,7 +244,7 @@ namespace winrt::DXEth {
 		}
 	}
 
-	std::vector<uint64_t> DXMiner::mine(
+	void DXMiner::mine(
 		int epoch,
 		std::array<uint8_t, 32> target,
 		std::array<uint8_t, 32> header,
@@ -280,6 +280,7 @@ namespace winrt::DXEth {
 		std::string targ_hash = real_target;
 		//cur final hashh (not right = 3279cb3011015dd4156f3b8b071cdc8a608b725cce16c3ceaa93f48a2e4826de)
 		std::string ez_targ = "0x00ff1c01710000000000000000000000d1ff1c01710000000000000000000000";
+			//"0x00000001710000000000000000000000d1ff1c01710000000000000000000000";
 		auto boundary = dev::h256(ez_targ);
 		const auto h256_header = h256(header_hash);
 
@@ -319,10 +320,10 @@ namespace winrt::DXEth {
 				m_d3d12ComputeCommandList->SetComputeRoot32BitConstants(5, sizeof(param) / 4, reinterpret_cast<void*>(&param), 0);
 
 				//orig = m_batchSize / COMPUTE_SHADER_NUM_THREADS
-				int num_threads = m_batchSize / COMPUTE_SHADER_NUM_THREADS;// 32;
+				int num_threads = m_batchSize / COMPUTE_SHADER_NUM_THREADS;
 				//OutputDebugString(L"Num threads is \n");
 				//OutputDebugString(std::to_wstring(num_threads).c_str());
-				m_d3d12ComputeCommandList->Dispatch(num_threads, 1, 1);
+				m_d3d12ComputeCommandList->Dispatch(num_threads , 1, 1);
 				param.init = 0;
 
 				// Schedule to copy the data to the default buffer to the readback buffer.
@@ -346,9 +347,24 @@ namespace winrt::DXEth {
 
 		MineResult* md = nullptr;
 		check_hresult(m_resultReadbackBuffer->Map(0, nullptr, reinterpret_cast<void**>(&md)));
+		// end time is after map, in real prog we wont print till after we start next batch
+		auto endTime = std::chrono::high_resolution_clock::now();
 		OutputDebugString(L"\ncount of nonces from res buffer \n");
 		OutputDebugString(std::to_wstring(md[0].count).c_str());
 		OutputDebugString(L"\n");
+		
+		for (int i = 0; i < 10; i++) {
+			OutputDebugString(std::to_wstring(i).c_str());
+			OutputDebugString(L" hi: ");
+			OutputDebugString(std::to_wstring(md[0].nonces[i].nonce[0]).c_str());
+			OutputDebugString(L" lo: ");
+			OutputDebugString(std::to_wstring(md[0].nonces[i].nonce[1]).c_str());
+			OutputDebugString(L"\n TOGETHER: ");
+			OutputDebugString(std::to_wstring(hi_lo_to_long_long(md[0].nonces[i].nonce[1], md[0].nonces[i].nonce[0])).c_str());
+			OutputDebugString(L"\n");
+
+		}
+
 		/*
 
 		
@@ -414,7 +430,12 @@ namespace winrt::DXEth {
 		*/
 		m_resultReadbackBuffer->Unmap(0, nullptr);
 
-		auto endTime = std::chrono::high_resolution_clock::now();
+
+		//HRESULT reason = m_d3d12Device->GetDeviceRemovedReason();
+		//OutputDebugString(L"dev remoived reason:\n");
+		//OutputDebugString(std::to_wstring(reason).c_str());
+		//OutputDebugString(L"\n");
+
 		auto elapsed = endTime - startTime;
 		auto ms = elapsed / std::chrono::microseconds(1);
 		OutputDebugString(L"microsconds taken: ");
@@ -424,7 +445,7 @@ namespace winrt::DXEth {
 		OutputDebugString(L"MHS: ");
 		OutputDebugString(std::to_wstring(mhs).c_str());
 		OutputDebugString(L"\n");
-		return std::vector<uint64_t>();
+		return;
 	}
 
 	void DXMiner::prepareEpoch(int epoch) {
