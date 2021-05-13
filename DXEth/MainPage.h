@@ -10,7 +10,7 @@ namespace winrt::DXEth::implementation
 
         int32_t MyProperty();
         void MyProperty(int32_t value);
-
+        winrt::fire_and_forget Button_Click(Windows::Foundation::IInspectable const& sender, Windows::UI::Xaml::RoutedEventArgs const& args);
         void ClickHandler(Windows::Foundation::IInspectable const& sender, Windows::UI::Xaml::RoutedEventArgs const& args);
     };
 }

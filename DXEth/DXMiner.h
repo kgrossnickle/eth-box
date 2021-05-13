@@ -6,10 +6,16 @@
 
 #include <d3d12.h>
 #include <dxgi1_6.h>
+#include "Constants.h"
+#include "keccak.h"
+#include"libdevcore/FixedHash.cpp"
+#include <codecvt>
+#include <ethash/ethash.hpp>
 
 namespace winrt::DXEth {
 	class DXMiner {
 	public:
+		DXMiner();
 		DXMiner(size_t deviceIndex);
 		void mine(
 			int epoch,
@@ -18,11 +24,35 @@ namespace winrt::DXEth {
 			uint64_t nonce,
 			uint64_t count
 		);
+		void mine_once();
+		void mine_forever();
+		void set_test_vars();
 		size_t getBatchSize();
 		void setBatchSize(size_t size);
 		static std::vector<std::string> listDevices();
+		void set_cur_nonce_from_extra_nonce();
+		void set_h256_header();
+		void set_debug_boundary_from_hash_str(std::string);
+		bool need_stop = true;
+		bool has_block_info = false;
+		bool has_boundary = false;
+		bool has_extra_nonce = false;
+		h256 m_header;
+		h256 m_boundary;
+		int m_epoch;
+		uint64_t m_cur_nonce;
+		std::string m_header_hash;
+		std::string m_extra_nonce_str;
+		std::string m_stratum_id;
+		std:: string m_job_id;
+		std::string m_seed = "";
+		int m_block_num;
+		std::vector<std::string> solutions; //jobid,nonce . needs to be split in maincpp. Extra nonce is already removed tho
+		double m_difficulty_as_dbl;
+		void prepareEpoch();
+		void set_boundary_from_diff();
+
 	private:
-		void prepareEpoch(int epoch);
 		void waitForQueue(com_ptr<ID3D12CommandQueue> &q);
 		com_ptr<ID3D12Debug> m_debugController;
 		com_ptr<ID3D12Device1> m_d3d12Device;
@@ -57,7 +87,6 @@ namespace winrt::DXEth {
 		com_ptr<ID3D12Fence> m_d3d12Fence;
 		UINT64 m_fenceValue;
 
-		int m_epoch = -1;
 		UINT m_batchSize = 64 * 1024;
 	};
 }

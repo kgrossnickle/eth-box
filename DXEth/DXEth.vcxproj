@@ -99,6 +99,7 @@
     <ClCompile>
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\dev\vcpkg\installed\x64-uwp\include;C:\crypto\FINALMINERS\ethash\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsWinRT>
     </ClCompile>
     <Link>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">D3d12.lib;DXGI.lib;WindowsApp.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -143,6 +144,7 @@
     <ClCompile>
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\dev\vcpkg\installed\x64-uwp\include;C:\crypto\FINALMINERS\ethash\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsWinRT>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -174,6 +176,7 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DXMiner.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="keccak.h" />
     <ClInclude Include="libdevcore\Common.h" />
     <ClInclude Include="libdevcore\CommonData.h" />

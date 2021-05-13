@@ -20,6 +20,32 @@
 #include <codecvt>
 #include <ethash/ethash.hpp>
 
+inline ethash::hash256 to_hash256(const std::string& hex)
+{
+	auto parse_digit = [](char d) -> int { return d <= '9' ? (d - '0') : (d - 'a' + 10); };
+
+	ethash::hash256 hash = {};
+	for (size_t i = 1; i < hex.size(); i += 2)
+	{
+		int h = parse_digit(hex[i - 1]);
+		int l = parse_digit(hex[i]);
+		hash.bytes[i / 2] = uint8_t((h << 4) | l);
+	}
+	return hash;
+}
+inline std::string to_hex(const ethash::hash256& h)
+{
+	static const auto hex_chars = "0123456789abcdef";
+	std::string str;
+	str.reserve(sizeof(h) * 2);
+	for (auto b : h.bytes)
+	{
+		str.push_back(hex_chars[uint8_t(b) >> 4]);
+		str.push_back(hex_chars[uint8_t(b) & 0xf]);
+	}
+	return str;
+}
+
 std::wstring s2ws(const std::string& str)
 {
 	int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
@@ -34,6 +60,7 @@ unsigned long long int hiloint2uint64(int h, int l)
 
 	return *reinterpret_cast<unsigned long long int*>(combined);
 }
+
 
 
 #define PUT_GENERIC_COM_PTR(x) __uuidof(x), x.put_void()
@@ -64,6 +91,8 @@ namespace winrt::DXEth {
 			uint32_t nonce[2]; // 8 bytes
 		} nonces[MAX_FOUND];
 	};
+	//default constructor, do nothing
+	DXMiner::DXMiner() {}
 
 	DXMiner::DXMiner(size_t index) {
 		//assert(sizeof(MineParam) == 80);
@@ -214,21 +243,26 @@ namespace winrt::DXEth {
 			m_fenceValue = 0;
 		}
 
-		OutputDebugString(L"Prepare for Epoch\n");
-		// prepareEpoch(0);
-		mine(0, std::array<uint8_t, 32>(), std::array<uint8_t, 32>(), 0, getBatchSize());
+		
+		//mine(0, std::array<uint8_t, 32>(), std::array<uint8_t, 32>(), 0, getBatchSize());
 	}
 
 	size_t DXMiner::getBatchSize() {
 		return m_batchSize;
 	}
-
+	void DXMiner::set_cur_nonce_from_extra_nonce() {
+		//use ones to differentiate a little from 0s
+		int tot_len = 16;
+		std::string ones(tot_len - m_extra_nonce_str.length(), '1');
+		std::string hex_cur_nonce = m_extra_nonce_str + ones;
+		m_cur_nonce = strtoull(hex_cur_nonce.c_str(), NULL, 16);
+	}
 	void DXMiner::setBatchSize(size_t batchSize) {
 		m_batchSize = (UINT)batchSize;
 	}
 
-	unsigned long long hi_lo_to_long_long(uint32_t high, uint32_t low) {
-		return ((unsigned long long) high) << 32 | low;
+	uint64_t hi_lo_to_long_long(uint32_t high, uint32_t low) {
+		return ((uint64_t) high) << 32 | low;
 	}
 
 	void DXMiner::waitForQueue(com_ptr<ID3D12CommandQueue>& q) {
@@ -244,6 +278,49 @@ namespace winrt::DXEth {
 		}
 	}
 
+	void DXMiner::mine_once(
+	) {
+		mine(0, std::array<uint8_t, 32>(), std::array<uint8_t, 32>(), 0, getBatchSize());
+	}
+
+	void DXMiner::mine_forever(
+	) {
+		while (true) {
+			if (!need_stop) {
+				mine(0, std::array<uint8_t, 32>(), std::array<uint8_t, 32>(), 0, getBatchSize());
+			}
+		}
+	}
+	void DXMiner::set_h256_header() {
+		m_header = h256(m_header_hash);
+	}
+	void DXMiner::set_test_vars() {
+		m_header_hash = "0x214914e1de29ad0d910cdf31845f73ad534fb2d294e387cd22927392758cc334";
+		std::string ez_targ = "0x00ff1c01710000000000000000000000d1ff1c01710000000000000000000000";
+
+		m_header = h256(m_header_hash);
+		m_boundary = h256(ez_targ);
+		m_cur_nonce = 0xa022ca5f9296443f - 8;
+		m_block_num = 12423113;
+		has_block_info = true;
+		has_boundary = true;
+		//also sets m_epoch in this call
+		prepareEpoch();
+	}
+	void DXMiner::set_debug_boundary_from_hash_str(std::string ez_targ) {
+		m_boundary = h256(ez_targ);
+	}
+	void DXMiner::set_boundary_from_diff() {
+		//works with longs
+		//m_boundary = h256{ u256((u512(1) << 256) / m_difficulty_as_dbl) };
+		// 
+		std::string targ_bound = getTargetFromDiff(m_difficulty_as_dbl);
+		OutputDebugString(L"\n\n\n\n\nTarget!!!! \n");
+		OutputDebugString(s2ws(targ_bound).c_str());
+		OutputDebugString(L"\n\n");
+		//float f = 2.3;
+		//m_boundary = (h256)(u256)((bigint(1) << 256) / f);
+	}
 	void DXMiner::mine(
 		int epoch,
 		std::array<uint8_t, 32> target,
@@ -251,15 +328,14 @@ namespace winrt::DXEth {
 		uint64_t startNonce,
 		uint64_t count
 	) {
-		epoch = 0;
-		double d = 7357883872081186;
+		//epoch = 0;
+		//double d = 7357883872081186;
 		//h256 boundary = h256{ u256((u512(1) << 256) / d) };
-		std::string real_target = dev::getTargetFromDiff(d);
+		//std::string real_target = dev::getTargetFromDiff(d);
 		//OutputDebugString(L"\nreal targ:\n");
 		//OutputDebugString(s2ws(real_target).c_str());
-		prepareEpoch(epoch);
 		size_t hashBytes = 64;
-		size_t datasetSize = constants.GetDatasetSize(epoch);
+		size_t datasetSize = constants.GetDatasetSize(m_epoch);
 		if (count % m_batchSize) {
 			throw std::runtime_error("count must be a multiple of batch size");
 		}
@@ -275,17 +351,12 @@ namespace winrt::DXEth {
 		MineParam param = {};
 		param.numDatasetElements = numDatasetElements;
 		param.init = 1;
-		startNonce = 0xa022ca5f9296443f - 8;
-		std::string header_hash = "0x214914e1de29ad0d910cdf31845f73ad534fb2d294e387cd22927392758cc334";
-		std::string targ_hash = real_target;
-		//cur final hashh (not right = 3279cb3011015dd4156f3b8b071cdc8a608b725cce16c3ceaa93f48a2e4826de)
-		std::string ez_targ = "0x00ff1c01710000000000000000000000d1ff1c01710000000000000000000000";
-			//"0x00000001710000000000000000000000d1ff1c01710000000000000000000000";
-		auto boundary = dev::h256(ez_targ);
-		const auto h256_header = h256(header_hash);
+		//store bc it might change while running
+		std::string cur_job_id = m_job_id;
 
-		memcpy(param.target, boundary.data(), boundary.size);
-		memcpy(param.header, h256_header.data(), h256_header.size);
+
+		memcpy(param.target, m_boundary.data(), m_boundary.size);
+		memcpy(param.header, m_header.data(), m_header.size);
 		auto startTime = std::chrono::high_resolution_clock::now();
 		{ // run mining
 
@@ -306,64 +377,98 @@ namespace winrt::DXEth {
 			//start nonce = 0 epoch 412 header = 0x21 should be
 			// output = 3539b0211b2536e95cf6dfc5bbbb32663ab3652dc3d7b8b65301ec2c2ab3e27c
 
-			for (uint64_t i = 0; i < count; i += m_batchSize) {
-				param.startNonce[0] =  ((startNonce + i) & 0xFFFFFFFF);//(startNonce + i)& ((1ULL << 32) - 1); //
-				param.startNonce[1] =  ((startNonce + i) & 0xFFFFFFFF00000000ULL) >> 32;//(startNonce + i) >> 32;////
-				check_hresult(m_d3d12ComputeCommandAllocator->Reset());
-				check_hresult(m_d3d12ComputeCommandList->Reset(m_d3d12ComputeCommandAllocator.get(), m_minePipelineState.get()));
-				m_d3d12ComputeCommandList->SetPipelineState(m_minePipelineState.get());
-				m_d3d12ComputeCommandList->SetComputeRootSignature(m_mineRootSignature.get());
-				for (size_t i = 0; i < 4; i++) {
-					m_d3d12ComputeCommandList->SetComputeRootUnorderedAccessView(i, m_datasetBuffers[i]->GetGPUVirtualAddress());
-				}
-				m_d3d12ComputeCommandList->SetComputeRootUnorderedAccessView(4, m_resultBuffer->GetGPUVirtualAddress());
-				m_d3d12ComputeCommandList->SetComputeRoot32BitConstants(5, sizeof(param) / 4, reinterpret_cast<void*>(&param), 0);
-
-				//orig = m_batchSize / COMPUTE_SHADER_NUM_THREADS
-				int num_threads = m_batchSize / COMPUTE_SHADER_NUM_THREADS;
-				//OutputDebugString(L"Num threads is \n");
-				//OutputDebugString(std::to_wstring(num_threads).c_str());
-				m_d3d12ComputeCommandList->Dispatch(num_threads , 1, 1);
-				param.init = 0;
-
-				// Schedule to copy the data to the default buffer to the readback buffer.
-				m_d3d12ComputeCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_resultBuffer.get(),
-					D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_SOURCE));
-
-				m_d3d12ComputeCommandList->CopyResource(m_resultReadbackBuffer.get(), m_resultBuffer.get());
-
-				m_d3d12ComputeCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_resultBuffer.get(),
-					D3D12_RESOURCE_STATE_COPY_SOURCE, D3D12_RESOURCE_STATE_COMMON));
-
-				check_hresult(m_d3d12ComputeCommandList->Close());
-				ID3D12CommandList* ppCommandLists[] = { m_d3d12ComputeCommandList.get() };
-
-				m_d3d12ComputeCommandQueue->ExecuteCommandLists(1, ppCommandLists);
-				waitForQueue(m_d3d12ComputeCommandQueue);
-
+			//for (uint64_t i = 0; i < count; i += m_batchSize) {
+			param.startNonce[0] =  ((m_cur_nonce ) & 0xFFFFFFFF);//(startNonce + i)& ((1ULL << 32) - 1); //
+			param.startNonce[1] =  ((m_cur_nonce) & 0xFFFFFFFF00000000ULL) >> 32;//(startNonce + i) >> 32;////
+			check_hresult(m_d3d12ComputeCommandAllocator->Reset());
+			check_hresult(m_d3d12ComputeCommandList->Reset(m_d3d12ComputeCommandAllocator.get(), m_minePipelineState.get()));
+			m_d3d12ComputeCommandList->SetPipelineState(m_minePipelineState.get());
+			m_d3d12ComputeCommandList->SetComputeRootSignature(m_mineRootSignature.get());
+			for (size_t i = 0; i < 4; i++) {
+				m_d3d12ComputeCommandList->SetComputeRootUnorderedAccessView(i, m_datasetBuffers[i]->GetGPUVirtualAddress());
 			}
+			m_d3d12ComputeCommandList->SetComputeRootUnorderedAccessView(4, m_resultBuffer->GetGPUVirtualAddress());
+			m_d3d12ComputeCommandList->SetComputeRoot32BitConstants(5, sizeof(param) / 4, reinterpret_cast<void*>(&param), 0);
+
+			//orig = m_batchSize / COMPUTE_SHADER_NUM_THREADS
+			int num_threads = m_batchSize / COMPUTE_SHADER_NUM_THREADS;
+			//OutputDebugString(L"Num threads is \n");
+			//OutputDebugString(std::to_wstring(num_threads).c_str());
+			m_d3d12ComputeCommandList->Dispatch(num_threads , 1, 1);
+			param.init = 0;
+
+			// Schedule to copy the data to the default buffer to the readback buffer.
+			m_d3d12ComputeCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_resultBuffer.get(),
+				D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_SOURCE));
+
+			m_d3d12ComputeCommandList->CopyResource(m_resultReadbackBuffer.get(), m_resultBuffer.get());
+
+			m_d3d12ComputeCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_resultBuffer.get(),
+				D3D12_RESOURCE_STATE_COPY_SOURCE, D3D12_RESOURCE_STATE_COMMON));
+
+			check_hresult(m_d3d12ComputeCommandList->Close());
+			ID3D12CommandList* ppCommandLists[] = { m_d3d12ComputeCommandList.get() };
+
+			m_d3d12ComputeCommandQueue->ExecuteCommandLists(1, ppCommandLists);
+			waitForQueue(m_d3d12ComputeCommandQueue);
+
+
+			
+			//}
 		}
 		
 
 		MineResult* md = nullptr;
 		check_hresult(m_resultReadbackBuffer->Map(0, nullptr, reinterpret_cast<void**>(&md)));
-		// end time is after map, in real prog we wont print till after we start next batch
 		auto endTime = std::chrono::high_resolution_clock::now();
-		OutputDebugString(L"\ncount of nonces from res buffer \n");
-		OutputDebugString(std::to_wstring(md[0].count).c_str());
-		OutputDebugString(L"\n");
+
+		// end time is after map, in real prog we wont print till after we start next batch
+		//OutputDebugString(L"\ncount of nonces from res buffer \n");
+		//OutputDebugString(std::to_wstring(md[0].count).c_str());
+		//OutputDebugString(L"\n");
 		
-		for (int i = 0; i < 10; i++) {
-			OutputDebugString(std::to_wstring(i).c_str());
+		//
+		bool print_debug = false;
+		for (int i = 0; i < 1; i++) {
+			/*OutputDebugString(std::to_wstring(i).c_str());
 			OutputDebugString(L" hi: ");
 			OutputDebugString(std::to_wstring(md[0].nonces[i].nonce[0]).c_str());
 			OutputDebugString(L" lo: ");
-			OutputDebugString(std::to_wstring(md[0].nonces[i].nonce[1]).c_str());
+			OutputDebugString(std::to_wstring(md[0].nonces[i].nonce[1]).c_str());*/
 			OutputDebugString(L"\n TOGETHER: ");
-			OutputDebugString(std::to_wstring(hi_lo_to_long_long(md[0].nonces[i].nonce[1], md[0].nonces[i].nonce[0])).c_str());
-			OutputDebugString(L"\n");
+			uint64_t res_nonce = hi_lo_to_long_long(md[0].nonces[i].nonce[1], md[0].nonces[i].nonce[0]);
+			OutputDebugString(std::to_wstring(res_nonce).c_str());
+			//OutputDebugString(L"\n");
+			if (res_nonce != 0) {
+				const auto& ethash_context = ethash::get_global_epoch_context(m_epoch);
+				OutputDebugString(L"\n\n\nFound a solution with full nonce: \n\n");
+				std::stringstream stream;
+				stream << std::setfill('0') << std::setw(sizeof(uint64_t) * 2)
+					<< std::hex << m_cur_nonce;
+				std::string full_nonce(stream.str());
+				OutputDebugString(L"\n\n\nFound a solution with full nonce: \n\n");
+				OutputDebugString(s2ws(full_nonce).c_str());
+				//remove extra nonce
+				full_nonce.erase(0, m_extra_nonce_str.length());
+				OutputDebugString(L"\n\n\n solution with extra nonce removed: \n\n");
+				OutputDebugString(s2ws(full_nonce).c_str());
+				solutions.push_back(cur_job_id + "," + full_nonce);
+				const ethash::hash256 ethash_header_hash =
+					to_hash256(m_header_hash); //.substr(2) if 0x
+				const auto ethash_res = ethash::hash(ethash_context, ethash_header_hash, res_nonce);
+				OutputDebugString(L"\nfinal hash: ");
+				OutputDebugString(s2ws(to_hex(ethash_res.final_hash)).c_str());
+				OutputDebugString(L"\n");
+				//OutputDebugString(L"mix hash: ");
+				//OutputDebugString(s2ws(to_hex(ethash_res.mix_hash)).c_str());
+				//OutputDebugString(L"\n"); 
+			}
+			//remove 0x with substr(2)
+
 
 		}
+
+
 
 		/*
 
@@ -435,7 +540,6 @@ namespace winrt::DXEth {
 		//OutputDebugString(L"dev remoived reason:\n");
 		//OutputDebugString(std::to_wstring(reason).c_str());
 		//OutputDebugString(L"\n");
-
 		auto elapsed = endTime - startTime;
 		auto ms = elapsed / std::chrono::microseconds(1);
 		OutputDebugString(L"microsconds taken: ");
@@ -445,25 +549,29 @@ namespace winrt::DXEth {
 		OutputDebugString(L"MHS: ");
 		OutputDebugString(std::to_wstring(mhs).c_str());
 		OutputDebugString(L"\n");
+
+		m_cur_nonce += m_batchSize * 8 * 64;
 		return;
 	}
 
-	void DXMiner::prepareEpoch(int epoch) {
-		if (epoch < 0) {
-			throw std::out_of_range("bad epoch");
-		}
-		if (epoch == m_epoch) {
-			return;
-		}
+	void DXMiner::prepareEpoch() {
+		
+
 
 		// generate cache, and upload to GPU
-
+		int epoch = ethash::get_epoch_number(m_block_num);
+		OutputDebugString(L"\n\n Epoch is:");
+		OutputDebugString(std::to_wstring(epoch).c_str());
 		size_t hashBytes = 64;
 		const auto& ethash_context = ethash::get_global_epoch_context(epoch);
 		size_t cacheSize = ethash::get_light_cache_size(ethash_context.light_cache_num_items);
+		OutputDebugString(L"\n\n Cache size is:");
+		OutputDebugString(std::to_wstring(cacheSize).c_str());
 		//ORIG BELOW
 		//size_t cacheSize = constants.GetCacheSize(epoch);
 		size_t datasetSize = constants.GetDatasetSize(epoch);
+		OutputDebugString(L"\n\n datasetSize is:");
+		OutputDebugString(std::to_wstring(datasetSize).c_str());
 		{
 			// create upload buffer
 			uint8_t* cacheData;

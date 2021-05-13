@@ -58,6 +58,7 @@
     <ClInclude Include="libdevcore\vector_ref.h">
       <Filter>libdevcore</Filter>
     </ClInclude>
+    <ClInclude Include="json.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Wide310x150Logo.scale-200.png">
