@@ -35,6 +35,7 @@ using namespace Windows::Foundation;
 
 
 int send_msg(std::string msg_name, std::string msg_val, SOCKET ConnectSocket) {
+    OutputDebugString(L"\nin send msg func");
     int iResult;
     const char* sendbuf = "";
     if (msg_name == "subscribe") {
@@ -55,7 +56,7 @@ int send_msg(std::string msg_name, std::string msg_val, SOCKET ConnectSocket) {
         WSACleanup();
         return -1;
     }
-    OutputDebugString(L"sent bytes\n");
+    OutputDebugString(L"\nsent bytes\n");
     //printf("Bytes Sent: %ld\n", iResult);
     return 0;
 }
@@ -83,10 +84,13 @@ SOCKET start_sock() {
     hints.ai_protocol = IPPROTO_TCP;
 
     // Resolve the server address and port
-    iResult = getaddrinfo("localhost", DEFAULT_PORT, &hints, &result);
+    //iResult = getaddrinfo("localhost", DEFAULT_PORT, &hints, &result);
     //iResult = getaddrinfo("stratum1+tcp://0x53C58a76a9E702efC8298E7F29f322Cd2e59847E.workertest@eth-us-east1.nanopool.org", "9999", &hints, &result);
     // BELOW WORKS! but not 100% bc auth
-    //iResult = getaddrinfo("eth-us-east1.nanopool.org", "9999", &hints, &result);
+    iResult = getaddrinfo("eth-us-east1.nanopool.org", "9999", &hints, &result);
+    //iResult = getaddrinfo("us1.ethpool.org", "3333", &hints, &result);
+    //iResult = getaddrinfo("us1.ethermine.org", "4444", &hints, &result);
+    //iResult = getaddrinfo("eth.2miners.com", "2020", &hints, &result);
     //iResult = getaddrinfo("0x53C58a76a9E702efC8298E7F29f322Cd2e59847E.workertest@eth-us-east1.nanopool.org", "9999", &hints, &result);
     if (iResult != 0) {
         printf("getaddrinfo failed with error: %d\n", iResult);
@@ -222,11 +226,7 @@ namespace winrt::DXEth::implementation
         char recvbuf[DEFAULT_BUFLEN];
         int recvbuflen = DEFAULT_BUFLEN;
         do {
-            OutputDebugString(L"\n ********* IN while receving tcp messages loop! ****\n");
-            OutputDebugString(L"\n miner.solutions.size()  = ");
-            OutputDebugString(std::to_wstring(miner.solutions.size()).c_str());
-            OutputDebugString(L"\n\n\n\n");
-            if (miner.solutions.size() > 0) {
+            while (miner.solutions.size() > 0) {
                 OutputDebugString(L"\n\nSending solution message!!!\n\n ");
                 std::string job_and_nonce = miner.solutions.back();
                 miner.solutions.pop_back();
@@ -236,22 +236,31 @@ namespace winrt::DXEth::implementation
                 std::string submitMsg = "{\"id\": 3,  \"method\" : \"mining.submit\",\"params\" : [\""+ wallet +"\",\""+job_id+"\",\""+ nonce_wo_extra +"\"]}";
                 OutputDebugString(L"\n\n solution message is: \n\n ");
                 OutputDebugString(s2ws(submitMsg).c_str());
+                OutputDebugString(L"\n\n calling send msg\n\n ");
                 send_msg("submit", submitMsg, ConnectSocket);
             }
             //std::this_thread::sleep_for(std::chrono::milliseconds(250));
             iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
-            if (iResult > 1) {
+            //ignore long messages / blasted messages
+            if (iResult > 1 && iResult < DEFAULT_BUFLEN) {
                 printf("Bytes received: %d\n", iResult);
                 recvbuf[iResult] = '\0';
                 std::string rec_str(recvbuf);
-                OutputDebugString(L"\n\ngot message:\n\n ");
-                OutputDebugString(s2ws(rec_str).c_str());
-                OutputDebugString(L"\n Formatted message:\n ");
+                //only print messages before we start
+                if (miner.need_stop == true) {
+                    OutputDebugString(L"\n\ngot message:\n\n ");
+                    OutputDebugString(s2ws(rec_str).c_str());
+                }
                 rec_str = "[" + ReplaceString(rec_str, "}{", "},{") + "]";
                 rec_str = ReplaceString(rec_str, "}\r\n{", "},{");
                 rec_str = ReplaceString(rec_str, "} \r\n{", "},{");
-                OutputDebugString(s2ws(rec_str).c_str());
-                OutputDebugString(L"\n");
+                rec_str = ReplaceString(rec_str, "} \n{", "},{");
+                rec_str = ReplaceString(rec_str, "}\n{", "},{");
+                if (miner.need_stop == true) {
+                    OutputDebugString(L"\n Formatted message:\n ");
+                    OutputDebugString(s2ws(rec_str).c_str());
+                    OutputDebugString(L"\n");
+                }
                 int num_msgs = 0;  
                 json all_js;
                 try {
@@ -273,9 +282,10 @@ namespace winrt::DXEth::implementation
                 for (int i = 0; i < num_msgs; i++) {
                     json js = all_js[i];
                     std::string msg_id = js["id"].dump();
-                    OutputDebugString(L"\n msg id is: \n");
-                    OutputDebugString(s2ws(msg_id).c_str());
-                    OutputDebugString(L"\n");
+                    //OutputDebugString(L"rec msg");
+                    //OutputDebugString(L"\n msg id is: \n");
+                    //OutputDebugString(s2ws(msg_id).c_str());
+                    //OutputDebugString(L"\n");
                     if (msg_id == "1") {
                         if (js["error"].dump() != "null") {
                             OutputDebugString(L"\nERROR CONNECTING got error code from pool: \n");
@@ -303,7 +313,7 @@ namespace winrt::DXEth::implementation
                         OutputDebugString(s2ws(js.dump()).c_str());
                     }
                     else if (msg_id == "3") {
-                        OutputDebugString(L"\n\n\n\n\n\n\nGot share validity response:\n ");
+                        OutputDebugString(L"\n\n\n\n\n\n\nGot share validity response!!!!!!:\n\n\n\n\n\n\n\n ");
                         OutputDebugString(s2ws(js.dump()).c_str());
                         OutputDebugString(L"\n\n\n\n");
                     }
@@ -311,32 +321,35 @@ namespace winrt::DXEth::implementation
                         std::string method = remove_quotes(js["method"].dump());
                         // we need to read message id = 1 to get extra nonce before starting to mine
                         if (method == "mining.notify" && miner.has_extra_nonce) {
-                            OutputDebugString(L"\n\nfull mining.notify message:\n\n ");
-                            OutputDebugString(s2ws(js.dump()).c_str());
+                            //OutputDebugString(L"\n\nfull mining.notify message:\n\n ");
+                            //OutputDebugString(s2ws(js.dump()).c_str());
                             miner.m_job_id = remove_quotes(js["params"][0].dump());
-                            OutputDebugString(L"\njob_id\n ");
-                            OutputDebugString(s2ws(miner.m_job_id).c_str());
+                            //OutputDebugString(L"\njob_id\n ");
+                            //OutputDebugString(s2ws(miner.m_job_id).c_str());
                             miner.m_header_hash = remove_quotes(js["params"][2].dump());
-                            OutputDebugString(L"\nheader_hash\n ");
-                            OutputDebugString(s2ws(miner.m_header_hash).c_str());
+                            //OutputDebugString(L"\nheader_hash\n ");
+                            //OutputDebugString(s2ws(miner.m_header_hash).c_str());
                             miner.set_h256_header();
-                            OutputDebugString(L"\nblock_num : \n ");
-                            miner.m_block_num = std::stoi(remove_quotes(js["height"].dump()));
-                            OutputDebugString(std::to_wstring(miner.m_block_num).c_str());
-                            miner.has_block_info = true;
-                            OutputDebugString(L"\nmsg seed : \n ");
+                            //OutputDebugString(L"\nblock_num : \n ");
+                            
+                            //miner.m_block_num = std::stoi(remove_quotes(js["height"].dump()));
+                            
+                            //OutputDebugString(std::to_wstring(miner.m_block_num).c_str());
+                            //OutputDebugString(L"\nmsg seed : \n ");
                             std::string msgseed = remove_quotes(js["params"][1].dump());
-                            OutputDebugString(s2ws(msgseed).c_str());
-                            OutputDebugString(L"\n");
+                            //OutputDebugString(s2ws(msgseed).c_str());
+                            //OutputDebugString(L"\n");
                             if (miner.m_seed != msgseed) {
                                 //New Epoch!
                                 miner.m_seed = msgseed;
                                 OutputDebugString(L"\nPreparing DAG for epoch!\n");
                                 miner.need_stop = true;
                                 miner.prepareEpoch();
+                                miner.has_block_info = true;
                                 OutputDebugString(L"\nFinished DAG generation\n");
                                 //after epoch we are ready to mine
-                                if (miner.has_extra_nonce == true && miner.has_boundary) {
+                                //technically dont need boundary...
+                                if (miner.has_extra_nonce == true){// && miner.has_boundary) {
                                     miner.need_stop = false;
                                 }
                             }
@@ -349,26 +362,40 @@ namespace winrt::DXEth::implementation
                             OutputDebugString(L"\n\nDifficulty as double:\n\n ");
                             OutputDebugString(std::to_wstring(miner.m_difficulty_as_dbl).c_str());
                             OutputDebugString(L"\n");
-                            miner.set_boundary_from_diff();
-                            miner.set_debug_boundary_from_hash_str("0x00ff1c01710000000000000000000000d1ff1c01710000000000000000000000");
+                            //miner.set_boundary_from_diff();
+                            //this is diff 1 
+                            // HARDCODED !!!!!!!!!!!!!!!!!!!      
+                            //miner.set_debug_boundary_from_hash_str("00000000ffff0000000000000000000000000000000000000000000000000000");
+                            miner.set_debug_boundary_from_hash_str("0x00001c01710000000000000000000000d1ff1c01710000000000000000000000");
                             miner.has_boundary = true;
                             //if we set epoch then get difficulty message
                             if (miner.has_block_info == true && miner.has_extra_nonce) {
                                 miner.need_stop = false;
                             }
                         }
+                        else {
+                            OutputDebugString(L"\n\nUNKOWN MSG TYPE with null id!!!!!\n\n ");
+                            OutputDebugString(s2ws(js.dump()).c_str());
+                            OutputDebugString(L"\n\n ");
+                        }
+                    }
+                    else {
+                        OutputDebugString(L"\n\nUNKOWN MSG id!!!!!\n\n ");
+                        OutputDebugString(s2ws(js.dump()).c_str());
+                        OutputDebugString(L"\n\n ");
                     }
                 }
 
 
             }
-            else if (iResult == 0) {
-                OutputDebugString(L"Connection closed\n");
-            }
             else {
+                if (iResult == 0) {
+                        OutputDebugString(L"Connection closed\n");
+                }
                 OutputDebugString(L"recv failed with error code:\n");
                 OutputDebugString(to_wstring(WSAGetLastError()).c_str() );
-                OutputDebugString(L"\n\n\n\n\n\n\n\n");
+                OutputDebugString(L"\n\n\n\n***RECONNECTING****\n\n\n\n");
+                ConnectSocket = start_sock();
             }
 
         } while (iResult > 0);

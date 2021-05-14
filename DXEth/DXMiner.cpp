@@ -46,6 +46,7 @@ inline std::string to_hex(const ethash::hash256& h)
 	return str;
 }
 
+
 std::wstring s2ws(const std::string& str)
 {
 	int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
@@ -297,7 +298,7 @@ namespace winrt::DXEth {
 	void DXMiner::set_test_vars() {
 		m_header_hash = "0x214914e1de29ad0d910cdf31845f73ad534fb2d294e387cd22927392758cc334";
 		std::string ez_targ = "0x00ff1c01710000000000000000000000d1ff1c01710000000000000000000000";
-
+		m_seed = "c57b49f1a72c107689bf82dc84a90a391527434dc641d05b9ef255554a647e1b";
 		m_header = h256(m_header_hash);
 		m_boundary = h256(ez_targ);
 		m_cur_nonce = 0xa022ca5f9296443f - 8;
@@ -309,6 +310,8 @@ namespace winrt::DXEth {
 	}
 	void DXMiner::set_debug_boundary_from_hash_str(std::string ez_targ) {
 		m_boundary = h256(ez_targ);
+		OutputDebugString(L"\ndebug (but real) as hash target is:\n");
+		OutputDebugString(s2ws(dev::toString(m_boundary)).c_str());
 	}
 	void DXMiner::set_boundary_from_diff() {
 		//works with longs
@@ -318,6 +321,9 @@ namespace winrt::DXEth {
 		OutputDebugString(L"\n\n\n\n\nTarget!!!! \n");
 		OutputDebugString(s2ws(targ_bound).c_str());
 		OutputDebugString(L"\n\n");
+		m_boundary = h256(targ_bound);
+		OutputDebugString(L"\nas hash target is:\n");
+		OutputDebugString(s2ws(dev::toString(m_boundary)).c_str());
 		//float f = 2.3;
 		//m_boundary = (h256)(u256)((bigint(1) << 256) / f);
 	}
@@ -353,7 +359,6 @@ namespace winrt::DXEth {
 		param.init = 1;
 		//store bc it might change while running
 		std::string cur_job_id = m_job_id;
-
 
 		memcpy(param.target, m_boundary.data(), m_boundary.size);
 		memcpy(param.header, m_header.data(), m_header.size);
@@ -435,16 +440,18 @@ namespace winrt::DXEth {
 			OutputDebugString(std::to_wstring(md[0].nonces[i].nonce[0]).c_str());
 			OutputDebugString(L" lo: ");
 			OutputDebugString(std::to_wstring(md[0].nonces[i].nonce[1]).c_str());*/
-			OutputDebugString(L"\n TOGETHER: ");
 			uint64_t res_nonce = hi_lo_to_long_long(md[0].nonces[i].nonce[1], md[0].nonces[i].nonce[0]);
-			OutputDebugString(std::to_wstring(res_nonce).c_str());
 			//OutputDebugString(L"\n");
-			if (res_nonce != 0) {
+			if (res_nonce != 0 && res_nonce != prev_res_nonce) {
+				prev_res_nonce = res_nonce;
+				OutputDebugString(L"\n TOGETHER: ");
+				
+				OutputDebugString(std::to_wstring(res_nonce).c_str());
 				const auto& ethash_context = ethash::get_global_epoch_context(m_epoch);
 				OutputDebugString(L"\n\n\nFound a solution with full nonce: \n\n");
 				std::stringstream stream;
 				stream << std::setfill('0') << std::setw(sizeof(uint64_t) * 2)
-					<< std::hex << m_cur_nonce;
+					<< std::hex << res_nonce;
 				std::string full_nonce(stream.str());
 				OutputDebugString(L"\n\n\nFound a solution with full nonce: \n\n");
 				OutputDebugString(s2ws(full_nonce).c_str());
@@ -459,6 +466,8 @@ namespace winrt::DXEth {
 				OutputDebugString(L"\nfinal hash: ");
 				OutputDebugString(s2ws(to_hex(ethash_res.final_hash)).c_str());
 				OutputDebugString(L"\n");
+				md[0].nonces[i].nonce[1] = 0;
+				md[0].nonces[i].nonce[0] = 0;
 				//OutputDebugString(L"mix hash: ");
 				//OutputDebugString(s2ws(to_hex(ethash_res.mix_hash)).c_str());
 				//OutputDebugString(L"\n"); 
@@ -542,15 +551,23 @@ namespace winrt::DXEth {
 		//OutputDebugString(L"\n");
 		auto elapsed = endTime - startTime;
 		auto ms = elapsed / std::chrono::microseconds(1);
-		OutputDebugString(L"microsconds taken: ");
-		OutputDebugString(std::to_wstring(ms).c_str());
-		OutputDebugString(L"\n");
-		auto mhs = (float)count / (float)ms;
-		OutputDebugString(L"MHS: ");
-		OutputDebugString(std::to_wstring(mhs).c_str());
-		OutputDebugString(L"\n");
 
-		m_cur_nonce += m_batchSize * 8 * 64;
+		//OutputDebugString(L"microsconds taken: ");
+		//OutputDebugString(std::to_wstring(ms).c_str());
+		//OutputDebugString(L"\n");
+		auto mhs = (float)count / (float)ms;
+		if (runs % 150 == 0) {
+			OutputDebugString(L"\nMHS: ");
+			OutputDebugString(std::to_wstring(mhs * 8 * 64).c_str());
+			OutputDebugString(L", cur nonce: ");
+			OutputDebugString(std::to_wstring(m_cur_nonce).c_str());
+			//OutputDebugString(L"\n");
+			runs = 0;
+		}
+		runs += 1;
+		//OutputDebugString(L"\n");
+
+		m_cur_nonce += (long)m_batchSize * 8 * 64;
 		return;
 	}
 
@@ -559,9 +576,11 @@ namespace winrt::DXEth {
 
 
 		// generate cache, and upload to GPU
-		int epoch = ethash::get_epoch_number(m_block_num);
-		OutputDebugString(L"\n\n Epoch is:");
+		//int epoch = ethash::get_epoch_number(m_block_num);
+		int epoch = constants.find_epoch_from_seed(m_seed);
+		OutputDebugString(L"\n\n Epoch is: ");
 		OutputDebugString(std::to_wstring(epoch).c_str());
+		OutputDebugString(L"\n\n");
 		size_t hashBytes = 64;
 		const auto& ethash_context = ethash::get_global_epoch_context(epoch);
 		size_t cacheSize = ethash::get_light_cache_size(ethash_context.light_cache_num_items);

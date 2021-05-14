@@ -46,6 +46,8 @@ namespace winrt::DXEth {
 		std::string m_stratum_id;
 		std:: string m_job_id;
 		std::string m_seed = "";
+		uint64_t prev_res_nonce = 0;
+		int runs = 0;
 		int m_block_num;
 		std::vector<std::string> solutions; //jobid,nonce . needs to be split in maincpp. Extra nonce is already removed tho
 		double m_difficulty_as_dbl;

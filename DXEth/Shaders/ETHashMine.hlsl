@@ -307,7 +307,9 @@ void main(uint3 tid : SV_DispatchThreadID) {
         r2 = res + 1;
 
         
-        if (r1 < bound || (r1 == bound && r2 < bound2 ) ) {
+        //if (r1 < bound || (r1 == bound && r2 < bound2 ) ) {
+        // hardcoded boundary!!!!
+         if (hashResult[0] == 0) {
             //count = mineResult[0].count;
             mineResult[0].nonces[0].nonce[0] = headerNonce[8];
             mineResult[0].nonces[0].nonce[1] = headerNonce[9];

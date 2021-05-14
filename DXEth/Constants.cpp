@@ -36,7 +36,6 @@ namespace winrt::DXEth {
 			}
 
 			auto seed_h256 = dev::h256(line);
-
 			m_seeds.push_back(seed_h256);
 		}
 		cacheSizesStream.close();
@@ -62,5 +61,29 @@ namespace winrt::DXEth {
 		if (epoch < 0 || epoch >= m_cacheSizes.size())
 			throw std::range_error("Epoch out of range");
 		return m_seeds[epoch];
+	}
+
+	int Constants::find_epoch_from_seed(std::string given_seed) {
+		std::wstring path = Windows::ApplicationModel::Package::Current().InstalledLocation().Path().c_str();
+		auto cacheSizesPath = path + L"/Assets/CacheSizes.txt";
+		auto datasetSizesPath = path + L"/Assets/DatasetSizes.txt";
+		auto seedsPath = path + L"/Assets/Seeds.txt";
+		std::ifstream cacheSizesStream(cacheSizesPath.c_str());
+		std::ifstream datasetSizesStream(datasetSizesPath.c_str());
+		std::ifstream seedsStream(seedsPath.c_str());
+		std::string line;
+		int count = 0;
+		while (std::getline(seedsStream, line)) {
+			if (line.size() != 64) {
+				throw std::runtime_error("bad seed size");
+			}
+			
+			if (line == given_seed) {
+				return count;
+			}
+			count += 1;
+
+		}
+		return -1;
 	}
 }

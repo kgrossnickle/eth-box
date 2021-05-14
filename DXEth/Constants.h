@@ -13,11 +13,13 @@ namespace winrt::DXEth {
 		size_t GetDatasetSize(int epoch);
 		//std::array<uint8_t, 32> GetSeed(int epoch);
 		dev::h256 GetSeed(int epoch);
+		int find_epoch_from_seed(std::string);
 	private:
 		std::vector<size_t> m_cacheSizes;
 		std::vector<size_t> m_datasetSizes;
 		//std::vector<std::array<uint8_t, 32>> m_seeds;
 		std::vector<dev::h256> m_seeds;
+		
 	};
 	extern Constants constants;
 }
