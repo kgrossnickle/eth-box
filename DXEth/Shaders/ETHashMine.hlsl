@@ -39,7 +39,7 @@ uint le_to_be(uint num) {
     return  res + 1;
 }
 // headerNonce is [header .. nonce]
-uint hashimoto(out uint result[8], uint headerNonce[10],uint be_target[8],uint index) {
+void hashimoto(out uint result[8], uint headerNonce[10]) {
     uint i, j, parentIndex;
     uint seed[16];
 
@@ -118,7 +118,7 @@ uint hashimoto(out uint result[8], uint headerNonce[10],uint be_target[8],uint i
     //    mineResult[0].nonces[i].nonce[0] = digest[i];
 
     keccak_256_768(result, concat);
-    return result[0];
+    //return result[0];
     //mineResult[0].nonces[0].nonce[0] = result[0];
     //mineResult[0].nonces[0].nonce[1] = result[1];
     //if ( le_to_be(result[0]) < be_target[0]  ) {
@@ -128,16 +128,7 @@ uint hashimoto(out uint result[8], uint headerNonce[10],uint be_target[8],uint i
     //mineResult[0].pad = result[0];
     
     //replace for loop with uint64 hash < uint64 target
-    for (i = 0; i < 8; i += 2) {
-        if (le_to_be(result[i]) < be_target[i]) {
-            return  true;
-        }
-        if (le_to_be(result[i]) > be_target[i]) {
-            return false;
-        }
-    }
 
-    return true;
 }
 void uint32_to_8(uint32_t x[8], out uint lit_int[32]) {
     uint i;
@@ -159,23 +150,61 @@ void targ_to_uint8s(uint4 target[2], out uint lit_int[32]) {
 //x = ( x >> 24 ) | (( x << 8) & 0x00ff0000 )| ((x >> 8) & 0x0000ff00) | ( x << 24)  ; 
 
 
+uint rand_lcg(uint rng_state)
+{
+    // LCG values from Numerical Recipes
+    rng_state = 1664525 * rng_state + 1013904223;
+    return rng_state;
+}
 
-//need to put back to NUM_THREADS
-#define NUM_X_THREADS 8
-#define NUM_Y_THREADS 8
-#define NUM_Z_THREADS 2
+uint rand_xorshift(uint rng_state)
+{
+    // Xorshift algorithm from George Marsaglia's paper
+    rng_state ^= (rng_state << 13);
+    rng_state ^= (rng_state >> 17);
+    rng_state ^= (rng_state << 5);
+    return rng_state;
+}
 
-[numthreads(8, 8,  2)]
-void main(uint3 tid : SV_DispatchThreadID) {
+uint when_eq(uint x, uint y) {
+    return 1.0 - abs(sign(x - y));
+}
+
+groupshared uint hash0_w_nonces = 9;
+
+[numthreads(16,1,1)]
+void main(uint3 groupID : SV_GroupID, uint3 tid : SV_DispatchThreadID, uint groupIndex : SV_GroupIndex) {
+
     uint i, index, foundIndex;
     uint hashResult[8];
     uint be_target[8];
     uint headerNonce[10]; // [header .. nonce]
-    bool found;
+    //bool found = false;
+    //uint ifound = 0;
+    //uint n1, n2;
+    //uint bound = be_target[0];
+    //uint bound2 = be_target[1];
+    //uint minv = be_target[0];
+    //uint c = 0;
 
-    for (i = 0; i < 8; i++) {
-        be_target[i] = le_to_be(target[i / 4][i % 4]);
-    }
+    uint j, parentIndex;
+    uint seed[16];
+
+    uint mix0[16];
+    uint mix1[16];
+
+    uint temp0[16];
+    uint temp1[16];
+
+    uint digest[8];
+    uint concat[24];
+   // uint finalNonce[2];
+    //uint tot_run = 0;
+    //uint batch_size = 64 * 1024;
+
+    //for (i = 0; i < 8; i++) {
+    //    be_target[i] = le_to_be(target[i / 4][i % 4]);
+    //}
     //index = tid.x;
     //if (index == 0 && init != 0) {
     //    mineResult[0].count = 0;
@@ -186,15 +215,114 @@ void main(uint3 tid : SV_DispatchThreadID) {
 
     for (i = 0; i < 2; i++)
         headerNonce[i + 8] = startNonce[i];
-    
+
     //looking at tid.y and z is slow af, just look at x and incrment by 64 to avoid collisions
+    //InterlockedAdd(mineResult[0].count, 65, foundIndex);
 
-    headerNonce[8] += tid.x * 128; //+ (tid.y * NUM_Y_THREADS);// +(tid.z * NUM_X_THREADS * NUM_Y_THREADS * NUM_Z_THREADS);
-    if (headerNonce[8] < startNonce[0])
-        headerNonce[9]++;
+    //mineResult[0].nonces[0].nonce[0] = rand;
+    //mineResult[0].nonces[0].nonce[1] = rand;
+    headerNonce[8] += tid.x;// +tid.y;//foundIndex;//(tid.x + (tid.y * NUM_Y_THREADS) +(tid.z * NUM_X_THREADS * NUM_Y_THREADS * NUM_Z_THREADS)) * 64;
 
-    for (i = 0; i < 8; i++)
-        hashResult[i] = 0;
+    //return;
+    //if (headerNonce[8] < startNonce[0])
+    //    headerNonce[9]++;
+
+    //does this make diff?
+    //for (i = 0; i < 8; i++)
+    //    hashResult[i] = 0;
+    //uint tr = 0;
+    //while (tr < 64) {
+        //tr++;
+        //headerNonce[8] ++;
+        // calculate seed
+        keccak_512_320(seed, headerNonce);
+
+        // initialize mix
+        mix0 = seed;
+        mix1 = seed;
+
+        //[unroll(ACCESSES)]
+        for (i = 0; i < 64; i++) {
+            j = i % 32;
+            parentIndex = fnv(i ^ seed[0], j < 16 ? mix0[j % 16] : mix1[j % 16]) % (numDatasetElements / 2);
+            datasetLoad(temp0, parentIndex * 2);
+            datasetLoad(temp1, (parentIndex * 2) + 1);
+            fnvHash(mix0, temp0);
+            fnvHash(mix1, temp1);
+        }
+
+        //ORIG
+        // compress mix into 256 bits
+        for (i = 0; i < 4; i++) {
+            j = i * 4; // j <= 12
+            digest[i] = fnv(fnv(fnv(mix0[j + 0], mix0[j + 1]), mix0[j + 2]), mix0[j + 3]);
+        }
+        //ORIG
+        for (i = 4; i < 8; i++) {
+            j = i * 4 - 16; // j <= 12
+            digest[i] = fnv(fnv(fnv(mix1[j + 0], mix1[j + 1]), mix1[j + 2]), mix1[j + 3]);
+        }
+
+        // concatinate seed and string
+        for (i = 0; i < 16; i++)
+            concat[i] = seed[i];
+        for (i = 16; i < 24; i++)
+            concat[i] = digest[i - 16];
+
+        keccak_256_768(hashResult, concat);
+        //hash0_w_nonces = min(hash0_w_nonces, hashResult[0]);
+
+        if ((hashResult[0] == 0) ){
+            mineResult[0].nonces[0].nonce[0] = headerNonce[8];
+            mineResult[0].nonces[0].nonce[1] = headerNonce[9];
+        }
+        //if (hashResult[0] == 0)
+        //    mineResult[tid.x].pad = hashResult[0];
+        //TotalSum[groupIndex] = l + r;
+        //GroupMemoryBarrierWithGroupSync();
+
+        //InterlockedOr(mineResult[0].pad, hashResult[0]);
+        //GroupMemoryBarrier();
+        //InterlockedMin(mineResult[0].pad, hashResult[0]);
+        //mineResult[0].pad = 3;// hashResult[0];//;min(mineResult[0].pad, hashResult[0]);
+        //mineResult[0].nonces[0].nonce[0] = tid.x;
+        //mineResult[0].nonces[0].nonce[0] = headerNonce[8] * when_eq(headerNonce[8], 0);
+        //mineResult[0].nonces[0].nonce[1] = headerNonce[9] * when_eq(headerNonce[8], 0);
+        //if (hashResult[0] == 0) {
+        //    mineResult[tid.x].pad = hashResult[0];
+            //mineResult[0].pad = 0;
+            //found = true;
+            //uint n1 = headerNonce[8];
+            //uint n2 = headerNonce[9];
+            //ifound = 1;
+            //mineResult[0].pad = mineResult[0].pad | hashResult[0];
+            //mineResult[0].nonces[0].nonce[0] = headerNonce[8];
+            //mineResult[0].nonces[0].nonce[1] = headerNonce[9];
+        //}
+
+    //}
+    //if (found) {
+    //    mineResult[0].nonces[0].nonce[0] = n1;
+    //    mineResult[0].nonces[0].nonce[1] = n2;
+    //}
+}
+
+    /*
+
+
+
+
+
+
+
+    //my new
+
+
+    uint i, index, foundIndex;
+    uint hashResult[8];
+    uint be_target[8];
+    uint headerNonce[10]; // [header .. nonce]
+    bool found;
     uint bound = be_target[0];
     uint bound2 = be_target[1];
     uint minv = be_target[0];
@@ -223,132 +351,87 @@ void main(uint3 tid : SV_DispatchThreadID) {
     uint tmp2;
     uint res;
     uint count;
+    //for (i = 0; i < 8; i++) {
+    //    be_target[i] = le_to_be(target[i / 4][i % 4]);
+    //}
+    //index = tid.x;
+    //if (index == 0 && init != 0) {
+    //    mineResult[0].count = 0;
+    //}
 
-    //InterlockedAdd(mineResult[0].count, 1, foundIndex);
-    while (tot_run < 64) {
-        headerNonce[8]++;
+    for (i = 0; i < 8; i++)
+        headerNonce[i] = header[i / 4][i % 4];
 
-        // dont check lets just inc each time
-        //if (headerNonce[8] < startNonce[0])
+    for (i = 0; i < 2; i++)
+        headerNonce[i + 8] = startNonce[i];
 
+    //looking at tid.y and z is slow af, just look at x and incrment by 64 to avoid collisions
+    //InterlockedAdd(mineResult[0].count, 65, foundIndex);
+    headerNonce[8] += tid.x;//foundIndex;//(tid.x + (tid.y * NUM_Y_THREADS) +(tid.z * NUM_X_THREADS * NUM_Y_THREADS * NUM_Z_THREADS)) * 64;
+    if (headerNonce[8] < startNonce[0])
         headerNonce[9]++;
-        tot_run++;
-        // calculate seed
-        keccak_512_320(seed, headerNonce);
 
-        // initialize mix
-        mix0 = seed;
-        mix1 = seed;
-
-        [unroll(ACCESSES)]
-        for (i = 0; i < ACCESSES; i++) {
-            j = i % 32;
-            parentIndex = fnv(i ^ seed[0], j < 16 ? mix0[j % 16] : mix1[j % 16]) % (numDatasetElements / 2);
-            datasetLoad(temp0, parentIndex * 2);
-            datasetLoad(temp1, (parentIndex * 2) + 1);
-            fnvHash(mix0, temp0);
-            fnvHash(mix1, temp1);
-        }
+    for (i = 0; i < 8; i++)
+        hashResult[i] = 0;
 
 
-        // compress mix into 256 bits
-        for (i = 0; i < 4; i++) {
-            j = i * 4; // j <= 12
-            digest[i] = fnv(fnv(fnv(mix0[j + 0], mix0[j + 1]), mix0[j + 2]), mix0[j + 3]);
-        }
+    // calculate seed
+    keccak_512_320(seed, headerNonce);
 
-        for (i = 4; i < 8; i++) {
-            j = i * 4 - 16; // j <= 12
-            digest[i] = fnv(fnv(fnv(mix1[j + 0], mix1[j + 1]), mix1[j + 2]), mix1[j + 3]);
-        }
+    // initialize mix
+    mix0 = seed;
+    mix1 = seed;
 
-        // concatinate seed and string
-        for (i = 0; i < 16; i++)
-            concat[i] = seed[i];
-        for (i = 16; i < 24; i++)
-            concat[i] = digest[i - 16];
-
-        //MIX DIGEST CORRECT UP TO HERE, OLD CHECK CODE
-        //for (i = 0; i < 8; i++)
-        //    mineResult[0].nonces[i].nonce[0] = digest[i];
-
-        keccak_256_768(hashResult, concat);
-        //
-
-        r1 = hashResult[0];
-        r2 = hashResult[1];
-
-        b0 = (r1 >> 24);
-        b1 = ((r1 << 8) & 0x00ff0000);
-        b2 = ((r1 >> 8) & 0x0000ff00);
-        b3 = (r1 << 24);
-
-        b0 = b0 | b1;
-        b1 = b2 | b3;
-        tmp = b1 - 1;
-        tmp = tmp + 1;
-        tmp2 = b0 + 1;
-        tmp2 = b0 - 1;
-        res = tmp2 | tmp;
-        r1 = res + 1;
-
-        b0 = (r2 >> 24);
-        b1 = ((r2 << 8) & 0x00ff0000);
-        b2 = ((r2 >> 8) & 0x0000ff00);
-        b3 = (r2 << 24);
-
-        b0 = b0 | b1;
-        b1 = b2 | b3;
-        tmp = b1 - 1;
-        tmp = tmp + 1;
-        tmp2 = b0 + 1;
-        tmp2 = b0 - 1;
-        res = tmp2 | tmp;
-        r2 = res + 1;
-
-        
-        //if (r1 < bound || (r1 == bound && r2 < bound2 ) ) {
-        // hardcoded boundary!!!!
-         if (hashResult[0] == 0) {
-            //count = mineResult[0].count;
-            mineResult[0].nonces[0].nonce[0] = headerNonce[8];
-            mineResult[0].nonces[0].nonce[1] = headerNonce[9];
-            //InterlockedAdd(mineResult[0].count, 1);
-            //finalNonce[0] = headerNonce[8];
-            //finalNonce[1] = headerNonce[9];
-            //found = true;
-        }
-        //minv = min(minv, hashResult[0]);
+    [unroll(ACCESSES)]
+    for (i = 0; i < ACCESSES; i++) {
+        j = i % 32;
+        parentIndex = fnv(i ^ seed[0], j < 16 ? mix0[j % 16] : mix1[j % 16]) % (numDatasetElements / 2);
+        datasetLoad(temp0, parentIndex * 2);
+        datasetLoad(temp1, (parentIndex * 2) + 1);
+        fnvHash(mix0, temp0);
+        fnvHash(mix1, temp1);
     }
 
-    //if (found) {
-    //    mineResult[0].nonces[0].nonce[0] = finalNonce[0];
-    //    mineResult[0].nonces[0].nonce[1] = finalNonce[1];
-        //InterlockedAdd(mineResult[0].count, 1, foundIndex);
-    //}
+
+    // compress mix into 256 bits
+    for (i = 0; i < 4; i++) {
+        j = i * 4; // j <= 12
+        digest[i] = fnv(fnv(fnv(mix0[j + 0], mix0[j + 1]), mix0[j + 2]), mix0[j + 3]);
+    }
+
+    for (i = 4; i < 8; i++) {
+        j = i * 4 - 16; // j <= 12
+        digest[i] = fnv(fnv(fnv(mix1[j + 0], mix1[j + 1]), mix1[j + 2]), mix1[j + 3]);
+    }
+
+    // concatinate seed and string
+    for (i = 0; i < 16; i++)
+        concat[i] = seed[i];
+    for (i = 16; i < 24; i++)
+        concat[i] = digest[i - 16];
+
+
+    keccak_256_768(hashResult, concat);
+
+    //if (r1 < bound || (r1 == bound && r2 < bound2 ) ) {
+    // hardcoded boundary!!!!
+    if (hashResult[0] == 0) {
+        
+            found = true;
+        //count = mineResult[0].count;
+        
+        //InterlockedAdd(mineResult[0].count, 1);
+        //finalNonce[0] = headerNonce[8];
+        //finalNonce[1] = headerNonce[9];
+        //found = true;
+    }
+    if (!found)
+        return;
+    mineResult[0].nonces[0].nonce[0] = headerNonce[8];
+    mineResult[0].nonces[0].nonce[1] = headerNonce[9];
     
-    
-    
-    //mineResult[0].nonces[0].nonce[0] = hashResult[0];
-    //mineResult[0].nonces[0].nonce[0] = (hashResult[0] < be_target[0]) ? hashResult[0] : mineResult[0].nonces[0].nonce[0]  ;
 
-
-    //mineResult[0].nonces[0].nonce[0] = headerNonce[8];
-        //mineResult[0].nonces[0].nonce[0] = headerNonce[8];
-        //InterlockedAdd(mineResult[0].count, 1, foundIndex);
-        //for (i = 0; i < 2; i++)
-        //    mineResult[0].nonces[0].nonce[i] = headerNonce[i + 8];
-        //mineResult[0].nonces[0].nonce[0] = headerNonce[ 8];
-        //mineResult[0].nonces[0].nonce[1] = headerNonce[9];
-    
-
-
-
-    
-    //THis doesnt error, might be faster to leave out
-    //if (foundIndex >= MAX_FOUND)
-    //    return;
-
-    //change index below, debugging
 
 }
+*/
+

@@ -33,6 +33,13 @@ using namespace Windows::Foundation;
 #define DEFAULT_BUFLEN 1024
 #define DEFAULT_PORT "9997" //"53817"
 
+std::wstring s2ws2(const std::string& str)
+{
+    int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
+    std::wstring wstrTo(size_needed, 0);
+    MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
+    return wstrTo;
+}
 
 int send_msg(std::string msg_name, std::string msg_val, SOCKET ConnectSocket) {
     OutputDebugString(L"\nin send msg func");
@@ -44,10 +51,19 @@ int send_msg(std::string msg_name, std::string msg_val, SOCKET ConnectSocket) {
     else if (msg_name == "auth") {
         sendbuf = "{\"id\": 2,\"method\" : \"mining.authorize\",\"params\" : [\"0x53C58a76a9E702efC8298E7F29f322Cd2e59847E\",\"\"]}";
     }
+    else if (msg_name == "auth2") {
+        sendbuf = "{\"id\":1,\"method\":\"eth_submitLogin\",\"params\":[\"0x53C58a76a9E702efC8298E7F29f322Cd2e59847E\",\"X\"],\"worker\":\"KMine\"}\n";
+    }
     else if (msg_name == "submit") {
         sendbuf = msg_val.c_str();
     }
+    else if (msg_name == "getwork") {
+        sendbuf = "{\"id\":5,\"method\":\"eth_getWork\",\"params\":[]}\n";
+    }
     // Send an initial buffer
+    std::string s_buf(sendbuf);
+    OutputDebugString(s2ws2(s_buf).c_str());
+
     iResult = send(ConnectSocket, sendbuf, (int)strlen(sendbuf), 0);
     if (iResult == SOCKET_ERROR) {
         OutputDebugString(L"send failure");
@@ -87,8 +103,8 @@ SOCKET start_sock() {
     //iResult = getaddrinfo("localhost", DEFAULT_PORT, &hints, &result);
     //iResult = getaddrinfo("stratum1+tcp://0x53C58a76a9E702efC8298E7F29f322Cd2e59847E.workertest@eth-us-east1.nanopool.org", "9999", &hints, &result);
     // BELOW WORKS! but not 100% bc auth
-    iResult = getaddrinfo("eth-us-east1.nanopool.org", "9999", &hints, &result);
-    //iResult = getaddrinfo("us1.ethpool.org", "3333", &hints, &result);
+    //iResult = getaddrinfo("eth-us-east1.nanopool.org", "9999", &hints, &result);
+    iResult = getaddrinfo("us1.ethpool.org", "3333", &hints, &result);
     //iResult = getaddrinfo("us1.ethermine.org", "4444", &hints, &result);
     //iResult = getaddrinfo("eth.2miners.com", "2020", &hints, &result);
     //iResult = getaddrinfo("0x53C58a76a9E702efC8298E7F29f322Cd2e59847E.workertest@eth-us-east1.nanopool.org", "9999", &hints, &result);
@@ -135,10 +151,7 @@ SOCKET start_sock() {
         return INVALID_SOCKET;
     }
 
-    int sent_ok = send_msg("subscribe", "", ConnectSocket);
-    if (sent_ok != 0) {
-        OutputDebugString(L"\n\nUnable to send subscribe message!\n\n");
-    }
+
 
     // shutdown the connection since no more data will be sent
     //iResult = shutdown(ConnectSocket, SD_SEND);
@@ -148,6 +161,16 @@ SOCKET start_sock() {
     //    WSACleanup();
     //    return INVALID_SOCKET;
     //}
+
+    int login_ok = send_msg("auth2", "", ConnectSocket);
+    int getwork_ok = send_msg("getwork", "", ConnectSocket);
+    if (login_ok != 0) {
+        OutputDebugString(L"\n\nUnable to send login message!\n\n");
+    }
+    if (getwork_ok != 0) {
+        OutputDebugString(L"\n\nUnable to send getwork message!\n\n");
+    }
+
     return ConnectSocket;
     // Receive until the peer closes the connection
 }
@@ -177,6 +200,7 @@ namespace winrt::DXEth::implementation
         return wstrTo;
     }
 
+
     MainPage::MainPage()
     {
         auto deviceList = DXMiner::listDevices();
@@ -188,7 +212,9 @@ namespace winrt::DXEth::implementation
 
         auto x = constants.GetCacheSize(0);
         miner = DXMiner(0);
-        //miner.set_test_vars();
+
+        miner.set_test_vars();
+        miner.mine_forever();
         
     }
 
@@ -228,12 +254,11 @@ namespace winrt::DXEth::implementation
         do {
             while (miner.solutions.size() > 0) {
                 OutputDebugString(L"\n\nSending solution message!!!\n\n ");
-                std::string job_and_nonce = miner.solutions.back();
+                solution sol = miner.solutions.back();
                 miner.solutions.pop_back();
-                std::string job_id = job_and_nonce.substr(0, job_and_nonce.find(","));
-                std::string nonce_wo_extra = job_and_nonce.substr(job_and_nonce.find(",")+1);
                 std::string wallet = "0x53C58a76a9E702efC8298E7F29f322Cd2e59847E";
-                std::string submitMsg = "{\"id\": 3,  \"method\" : \"mining.submit\",\"params\" : [\""+ wallet +"\",\""+job_id+"\",\""+ nonce_wo_extra +"\"]}";
+                //std::string submitMsg = "{\"id\": 3,  \"method\" : \"mining.submit\",\"params\" : [\""+ wallet +"\",\""+job_id+"\",\""+ nonce_wo_extra +"\"]}";
+                std::string submitMsg = "{ \"id\":3,\"method\" : \"eth_submitWork\",\"params\" : [\"0x" + sol.nonce + "\",\"0x" + sol.header + "\",\"0x" + sol.mix + "\"] ,\"worker\" : \"KMine\" }\n";
                 OutputDebugString(L"\n\n solution message is: \n\n ");
                 OutputDebugString(s2ws(submitMsg).c_str());
                 OutputDebugString(L"\n\n calling send msg\n\n ");
@@ -287,6 +312,17 @@ namespace winrt::DXEth::implementation
                     //OutputDebugString(s2ws(msg_id).c_str());
                     //OutputDebugString(L"\n");
                     if (msg_id == "1") {
+                        if (!js.contains("result") || js["result"].dump() != "true") {
+                            OutputDebugString(L"\nERROR AUTHING got error code from pool: \n");
+                            OutputDebugString(s2ws(js["result"].dump()).c_str());
+                        }
+
+                        OutputDebugString(L"\n\nfull auth resp message:\n\n ");
+                        OutputDebugString(s2ws(js.dump()).c_str());
+                        miner.m_extra_nonce_str = "3dea";
+                        miner.set_cur_nonce_from_extra_nonce();
+                        miner.has_extra_nonce = true;
+                        /*
                         if (js["error"].dump() != "null") {
                             OutputDebugString(L"\nERROR CONNECTING got error code from pool: \n");
                             OutputDebugString(s2ws(js["error"].dump()).c_str());
@@ -298,17 +334,24 @@ namespace winrt::DXEth::implementation
                         OutputDebugString(L"\n\nfull subscribe resp message:\n\n ");
                         OutputDebugString(s2ws(js.dump()).c_str());
                         miner.has_extra_nonce = true;
-                        send_msg("auth", "", ConnectSocket);
+                        //dont auth here anymore start with auth
+                        //send_msg("auth2", "", ConnectSocket);
+                        
                         if (miner.has_block_info == true && miner.has_boundary) {
                             miner.need_stop = false;
-                        }
+                        }*/
                     }
 
                     else if (msg_id == "2") {
-                        if (js["error"].dump() != "null") {
+                        //if (js["error"].dump() != "null") {
+                        //    OutputDebugString(L"\nERROR AUTHING got error code from pool: \n");
+                        //    OutputDebugString(s2ws(js["error"].dump()).c_str());
+                        //}
+                        if (!js.contains("result") || js["result"].dump() != "true" ) {
                             OutputDebugString(L"\nERROR AUTHING got error code from pool: \n");
-                            OutputDebugString(s2ws(js["error"].dump()).c_str());
+                            OutputDebugString(s2ws(js["result"].dump()).c_str());
                         }
+                        
                         OutputDebugString(L"\n\nfull auth resp message:\n\n ");
                         OutputDebugString(s2ws(js.dump()).c_str());
                     }
@@ -377,6 +420,42 @@ namespace winrt::DXEth::implementation
                             OutputDebugString(L"\n\nUNKOWN MSG TYPE with null id!!!!!\n\n ");
                             OutputDebugString(s2ws(js.dump()).c_str());
                             OutputDebugString(L"\n\n ");
+                        }
+                    }
+                    else if (msg_id == "0") {
+                        miner.m_header_hash = remove_quotes(js["result"][0].dump());
+                        //OutputDebugString(L"\nheader_hash\n ");
+                        //OutputDebugString(s2ws(miner.m_header_hash).c_str());
+                        miner.set_h256_header();
+                        //OutputDebugString(L"\nblock_num : \n ");
+
+                        //miner.m_block_num = std::stoi(remove_quotes(js["height"].dump()));
+
+                        //OutputDebugString(std::to_wstring(miner.m_block_num).c_str());
+                        //OutputDebugString(L"\nmsg seed : \n ");
+                        std::string msgseed = remove_quotes(js["result"][1].dump());
+                        if (msgseed.substr(0,2) == "0x") {
+                            msgseed = msgseed.substr(2);
+                        }
+                        //OutputDebugString(s2ws(msgseed).c_str());
+                        std::string bound = remove_quotes(js["result"][2].dump());
+                        //
+                        // NOT USED YET, NEED TO FIX CURRENT IMPLEMENT in HLSL of simply needing 00000000
+                        //
+                        //OutputDebugString(L"\n");
+                        if (miner.m_seed != msgseed) {
+                            //New Epoch!
+                            miner.m_seed = msgseed;
+                            OutputDebugString(L"\nPreparing DAG for epoch!\n");
+                            miner.need_stop = true;
+                            miner.prepareEpoch();
+                            miner.has_block_info = true;
+                            OutputDebugString(L"\nFinished DAG generation\n");
+                            //after epoch we are ready to mine
+                            //technically dont need boundary...
+                            if (miner.has_extra_nonce == true) {// && miner.has_boundary) {
+                                miner.need_stop = false;
+                            }
                         }
                     }
                     else {

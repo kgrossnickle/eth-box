@@ -77,7 +77,17 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="PropertySheet.props" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Label="UserMacros">
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <PackageCertificateThumbprint>9C51537D50418781D3CF9B4074861195F27D4F32</PackageCertificateThumbprint>
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <GenerateTestArtifacts>True</GenerateTestArtifacts>
+    <AppxBundle>Always</AppxBundle>
+    <AppxBundlePlatforms>x64</AppxBundlePlatforms>
+    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -145,6 +155,7 @@
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\dev\vcpkg\installed\x64-uwp\include;C:\crypto\FINALMINERS\ethash\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsWinRT>
+      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -243,6 +254,7 @@
     </Midl>
   </ItemGroup>
   <ItemGroup>
+    <None Include="DXEth_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="PropertySheet.props" />
     <None Include="Shaders\ETHash.hlsli" />

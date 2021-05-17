@@ -77,6 +77,8 @@ namespace winrt::DXEth {
 		uint32_t datasetGenerationOffset;
 	};
 
+
+
 	struct MineParam {
 		uint32_t target[8];
 		uint32_t header[8];
@@ -298,13 +300,16 @@ namespace winrt::DXEth {
 	void DXMiner::set_test_vars() {
 		m_header_hash = "0x214914e1de29ad0d910cdf31845f73ad534fb2d294e387cd22927392758cc334";
 		std::string ez_targ = "0x00ff1c01710000000000000000000000d1ff1c01710000000000000000000000";
-		m_seed = "c57b49f1a72c107689bf82dc84a90a391527434dc641d05b9ef255554a647e1b";
+		m_seed = "c57b49f1a72c107689bf82dc84a90a391527434dc641d05b9ef255554a647e1b"; // seed 414
+		m_seed = "510e4e770828ddbf7f7b00ab00a9f6adaf81c0dc9cc85f1f8249c256942d61d9"; //seed = 2
 		m_header = h256(m_header_hash);
 		m_boundary = h256(ez_targ);
 		m_cur_nonce = 0xa022ca5f9296443f - 8;
 		m_block_num = 12423113;
 		has_block_info = true;
 		has_boundary = true;
+		m_is_test = true;
+		need_stop = false;
 		//also sets m_epoch in this call
 		prepareEpoch();
 	}
@@ -359,9 +364,12 @@ namespace winrt::DXEth {
 		param.init = 1;
 		//store bc it might change while running
 		std::string cur_job_id = m_job_id;
-
+		std::string cur_header = dev::toString(m_header);
 		memcpy(param.target, m_boundary.data(), m_boundary.size);
 		memcpy(param.header, m_header.data(), m_header.size);
+		int shade_threads = 16 ;
+		int num_threads = (m_batchSize) / shade_threads;
+		//num_threads = (256 * 64 * 64) / shade_threads;
 		auto startTime = std::chrono::high_resolution_clock::now();
 		{ // run mining
 
@@ -396,10 +404,9 @@ namespace winrt::DXEth {
 			m_d3d12ComputeCommandList->SetComputeRoot32BitConstants(5, sizeof(param) / 4, reinterpret_cast<void*>(&param), 0);
 
 			//orig = m_batchSize / COMPUTE_SHADER_NUM_THREADS
-			int num_threads = m_batchSize / COMPUTE_SHADER_NUM_THREADS;
-			//OutputDebugString(L"Num threads is \n");
-			//OutputDebugString(std::to_wstring(num_threads).c_str());
-			m_d3d12ComputeCommandList->Dispatch(num_threads , 1, 1);
+			 //m_batchsize
+			//num_threads = 1;
+			m_d3d12ComputeCommandList->Dispatch(num_threads, 1, 1);
 			param.init = 0;
 
 			// Schedule to copy the data to the default buffer to the readback buffer.
@@ -422,10 +429,10 @@ namespace winrt::DXEth {
 			//}
 		}
 		
-
+		auto endTime = std::chrono::high_resolution_clock::now();
 		MineResult* md = nullptr;
 		check_hresult(m_resultReadbackBuffer->Map(0, nullptr, reinterpret_cast<void**>(&md)));
-		auto endTime = std::chrono::high_resolution_clock::now();
+		
 
 		// end time is after map, in real prog we wont print till after we start next batch
 		//OutputDebugString(L"\ncount of nonces from res buffer \n");
@@ -455,13 +462,15 @@ namespace winrt::DXEth {
 				std::string full_nonce(stream.str());
 				OutputDebugString(L"\n\n\nFound a solution with full nonce: \n\n");
 				OutputDebugString(s2ws(full_nonce).c_str());
-				//remove extra nonce
-				full_nonce.erase(0, m_extra_nonce_str.length());
-				OutputDebugString(L"\n\n\n solution with extra nonce removed: \n\n");
-				OutputDebugString(s2ws(full_nonce).c_str());
-				solutions.push_back(cur_job_id + "," + full_nonce);
+				//remove extra nonce (DONT DO IT NOW, THINK ITS NOT SUPPOSED TO)
+				//full_nonce.erase(0, m_extra_nonce_str.length());
+				//OutputDebugString(L"\n\n\n solution with extra nonce removed: \n\n");
+				//OutputDebugString(s2ws(full_nonce).c_str());
+				if (cur_header.substr(0, 2) == "0x") {
+					cur_header = cur_header.substr(2);
+				}
 				const ethash::hash256 ethash_header_hash =
-					to_hash256(m_header_hash); //.substr(2) if 0x
+					to_hash256(cur_header); //.substr(2) if 0x
 				const auto ethash_res = ethash::hash(ethash_context, ethash_header_hash, res_nonce);
 				OutputDebugString(L"\nfinal hash: ");
 				OutputDebugString(s2ws(to_hex(ethash_res.final_hash)).c_str());
@@ -471,6 +480,12 @@ namespace winrt::DXEth {
 				//OutputDebugString(L"mix hash: ");
 				//OutputDebugString(s2ws(to_hex(ethash_res.mix_hash)).c_str());
 				//OutputDebugString(L"\n"); 
+				solution sol;
+				sol.nonce = full_nonce;
+				sol.job = cur_job_id;
+				sol.header = m_header_hash;
+				sol.mix = to_hex(ethash_res.mix_hash);
+				solutions.push_back(sol);
 			}
 			//remove 0x with substr(2)
 
@@ -555,19 +570,24 @@ namespace winrt::DXEth {
 		//OutputDebugString(L"microsconds taken: ");
 		//OutputDebugString(std::to_wstring(ms).c_str());
 		//OutputDebugString(L"\n");
-		auto mhs = (float)count / (float)ms;
-		if (runs % 150 == 0) {
+		auto mhs = (float)(num_threads * shade_threads) / (float)ms;  //
+		//mhs = (float)m_batchSize / (float)ms;
+		if (runs == 0 || ((endTime - last_mine_print) / std::chrono::microseconds(1) ) > (1000000)) {
+			last_mine_print = endTime;
 			OutputDebugString(L"\nMHS: ");
-			OutputDebugString(std::to_wstring(mhs * 8 * 64).c_str());
+			//mhs = mhs * 64;// * 8;
+			OutputDebugString(std::to_wstring(mhs ).c_str());
+			OutputDebugString(L" microsec: ");
+			OutputDebugString(std::to_wstring(ms).c_str());
 			OutputDebugString(L", cur nonce: ");
 			OutputDebugString(std::to_wstring(m_cur_nonce).c_str());
-			//OutputDebugString(L"\n");
+			
 			runs = 0;
 		}
-		runs += 1;
+		runs ++;
 		//OutputDebugString(L"\n");
-
-		m_cur_nonce += (long)m_batchSize * 8 * 64;
+		long tmp = (long)m_batchSize;
+		m_cur_nonce += tmp*2;
 		return;
 	}
 

@@ -13,6 +13,13 @@
 #include <ethash/ethash.hpp>
 
 namespace winrt::DXEth {
+	struct solution {
+		std::string header;
+		std::string mix;
+		std::string nonce;
+		std::string job;
+	};
+
 	class DXMiner {
 	public:
 		DXMiner();
@@ -40,6 +47,7 @@ namespace winrt::DXEth {
 		h256 m_header;
 		h256 m_boundary;
 		int m_epoch;
+		bool m_is_test = false;
 		uint64_t m_cur_nonce;
 		std::string m_header_hash;
 		std::string m_extra_nonce_str;
@@ -49,10 +57,11 @@ namespace winrt::DXEth {
 		uint64_t prev_res_nonce = 0;
 		int runs = 0;
 		int m_block_num;
-		std::vector<std::string> solutions; //jobid,nonce . needs to be split in maincpp. Extra nonce is already removed tho
+		std::vector<solution> solutions; //jobid,nonce . needs to be split in maincpp. Extra nonce is already removed tho
 		double m_difficulty_as_dbl;
 		void prepareEpoch();
 		void set_boundary_from_diff();
+		std::chrono::steady_clock::time_point last_mine_print;
 
 	private:
 		void waitForQueue(com_ptr<ID3D12CommandQueue> &q);

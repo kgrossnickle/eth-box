@@ -188,7 +188,6 @@ void keccak_256_768(out uint dst[8], in uint src[24]) {
     st[16] = uint2(0x00000000, 0x80000000);
 
     keccak(st);
-
     for (i = 0; i < 4; i++) {
         dst[i * 2] = st[i].x;
         dst[i * 2 + 1] = st[i].y;

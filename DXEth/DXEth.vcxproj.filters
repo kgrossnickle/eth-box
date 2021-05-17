@@ -104,6 +104,7 @@
     <None Include="Shaders\ETHash.hlsli">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="DXEth_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="readme.txt" />
