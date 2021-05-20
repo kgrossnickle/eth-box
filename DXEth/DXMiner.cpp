@@ -18,7 +18,17 @@
 #include "keccak.h"
 #include"libdevcore/FixedHash.cpp"
 #include <codecvt>
+//#include <renderdoc_app.h>
 #include <ethash/ethash.hpp>
+
+#ifdef WIN_PORT
+#include <Windows.h>
+#endif
+//
+#ifdef WIN_PORT
+// forward declarations
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+#endif
 
 inline ethash::hash256 to_hash256(const std::string& hex)
 {
@@ -66,7 +76,9 @@ unsigned long long int hiloint2uint64(int h, int l)
 
 #define PUT_GENERIC_COM_PTR(x) __uuidof(x), x.put_void()
 #define COMPUTE_SHADER_NUM_THREADS 16
-#define MAX_FOUND 32
+#define MAX_FOUND 1
+
+
 
 using namespace winrt;
 
@@ -88,8 +100,8 @@ namespace winrt::DXEth {
 	};
 
 	struct MineResult {
-		uint32_t count;    // 4 bytes
-		uint32_t pad;
+		//uint32_t count;    // 4 bytes
+		//uint32_t pad;
 		struct {
 			uint32_t nonce[2]; // 8 bytes
 		} nonces[MAX_FOUND];
@@ -99,19 +111,20 @@ namespace winrt::DXEth {
 
 	DXMiner::DXMiner(size_t index) {
 		//assert(sizeof(MineParam) == 80);
-#if defined(_DEBUG)
-		// check_hresult(D3D12GetDebugInterface(PUT_GENERIC_COM_PTR(m_debugController)));
-		// m_debugController->EnableDebugLayer();
-#endif
+//#if defined(_DEBUG)
+		std::cout << "enabling debug\n";
+		//check_hresult(D3D12GetDebugInterface(PUT_GENERIC_COM_PTR(m_debugController)));
+		//m_debugController->EnableDebugLayer();
+//#endif
 		com_ptr<IDXGIFactory4> dxgiFactory;
 		com_ptr<IDXGIAdapter1> dxgiAdapter1;
 		std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
 		std::vector<std::string> l;
 		UINT createFactoryFlags = 0;
-#if defined(_DEBUG)
-		// createFactoryFlags = DXGI_CREATE_FACTORY_DEBUG;
-#endif
-		check_hresult(CreateDXGIFactory2(0, PUT_GENERIC_COM_PTR(dxgiFactory)));
+//#if defined(_DEBUG)
+	 //createFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+//#endif
+		check_hresult(CreateDXGIFactory2(createFactoryFlags, PUT_GENERIC_COM_PTR(dxgiFactory)));
 		for (UINT i = 0; dxgiAdapter1 = nullptr, SUCCEEDED(dxgiFactory->EnumAdapters1(i, dxgiAdapter1.put())); i++) {
 			if (i == index) {
 				DXGI_ADAPTER_DESC1 dxgiAdapterDesc1;
@@ -119,7 +132,10 @@ namespace winrt::DXEth {
 				OutputDebugString(L"Creating Device: ");
 				OutputDebugString(dxgiAdapterDesc1.Description);
 				OutputDebugString(L"\n");
+				//orig
 				check_hresult(D3D12CreateDevice(dxgiAdapter1.get(), D3D_FEATURE_LEVEL_11_0, PUT_GENERIC_COM_PTR(m_d3d12Device)));
+
+
 				break;
 			}
 		}
@@ -176,9 +192,97 @@ namespace winrt::DXEth {
 			m_d3d12CopyCommandQueue->SetName(L"CopyCommandQueue");
 		}
 
-		std::wstring AppPath = Windows::ApplicationModel::Package::Current().InstalledLocation().Path().c_str();
+		D3D12_COMMAND_QUEUE_DESC queueDesc = {};
+		queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+		queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+		com_ptr <ID3D12CommandQueue> queue;
+		check_hresult(m_d3d12Device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&queue)) );
 
-		OutputDebugString(L"rs generateDataset\n");
+
+#ifdef WIN_PORT
+		swapChain.Reset();
+
+		const wchar_t CLASS_NAME[] = L"Sample Window Class";
+
+		WNDCLASS wc = { };
+
+		wc.lpfnWndProc = WindowProc;
+		wc.hInstance = mhAppInst;
+		wc.lpszClassName = CLASS_NAME;
+
+		RegisterClass(&wc);
+
+		// Create the window.
+
+		HWND hwnd = CreateWindowEx(
+			0,                              // Optional window styles.
+			CLASS_NAME,                     // Window class
+			L"Learn to Program Windows",    // Window text
+			WS_OVERLAPPEDWINDOW,            // Window style
+
+			// Size and position
+			CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+
+			NULL,       // Parent window    
+			NULL,       // Menu
+			mhAppInst,  // Instance handle
+			NULL        // Additional application data
+		);
+
+		if (hwnd == NULL)
+		{
+			exit(69);
+		}
+		mhMainWnd = hwnd;
+
+		int width = 100;
+		int height = 100;
+		//mhAppInst = GetModuleHandle(NULL);
+		std:: string caption = "unusedcaption";
+		std::string winname = "MainWnd";
+		//mhMainWnd = CreateWindowA(winname.c_str(), caption.c_str(),
+		//	WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, mhAppInst, 0) ; 
+		if (mhMainWnd == NULL)
+		{
+			OutputDebugString(L"\n\nNULL HWND after creating window!\n\n");
+			OutputDebugString(std::to_wstring(GetLastError()).c_str());
+			OutputDebugString(L"\n\nNULL HWND after creating window!\n\n");
+			std::cout << "NULL HWND after creating window!";
+			//exit(20);
+		}
+		DXGI_SWAP_CHAIN_DESC sd;
+		sd.BufferDesc.Width = 1;
+		sd.BufferDesc.Height = 1;
+		sd.BufferDesc.RefreshRate.Numerator = 60;
+		sd.BufferDesc.RefreshRate.Denominator = 1;
+		sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;//mBackBufferFormat;
+		sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+		sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+		sd.SampleDesc.Count =  1;
+		sd.SampleDesc.Quality =  0;
+		sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+		sd.BufferCount = 2;
+		sd.OutputWindow = mhMainWnd;
+		sd.Windowed = true;
+		sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+		sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+		std::cout << "pre swap \n";
+
+		OutputDebugString(L"pre swap");
+		check_hresult(dxgiFactory->CreateSwapChain(queue.get(), &sd, swapChain.GetAddressOf()));
+		OutputDebugString(L"post swap pre pres");
+		std::cout << "post swap , now pres\n";
+#endif
+		//swapChain->Present(0, DXGI_PRESENT_TEST);
+		//#ifdef WIN_PORT
+		std::wstring AppPath = L"C:\\crypto\\DXEth\\x64\\Debug\\DXEth\\AppX\\";
+		//#endif
+		//#ifndef WIN_PORT
+		//std::wstring AppPath = Windows::ApplicationModel::Package::Current().InstalledLocation().Path().c_str();
+		//#endif
+		OutputDebugString(L"PATH for files :: \n\n\n\n\n");
+		OutputDebugString( AppPath.c_str());
+		OutputDebugString(L"\n\n\n\n\nrs generateDataset\n");
 		{ // create root signature for generateDataset
 
 			CD3DX12_ROOT_PARAMETER1 rootParameters[6] = {};
@@ -206,8 +310,12 @@ namespace winrt::DXEth {
 		OutputDebugString(L"rs mine\n");
 		{ // create root signature for mine
 			CD3DX12_ROOT_PARAMETER1 rootParameters[6] = {};
-			for (UINT i = 0; i < 5; i++)
-				rootParameters[i].InitAsUnorderedAccessView(i);
+			//ORIG
+			//for (UINT i = 0; i < 5; i++)
+			//	rootParameters[i].InitAsUnorderedAccessView(i);
+			for (UINT i = 0; i < 4; i++)
+				rootParameters[i].InitAsShaderResourceView(i);//  InitAsUnorderedAccessView(i);
+			rootParameters[4].InitAsUnorderedAccessView(4);
 			rootParameters[5].InitAsConstants(sizeof(MineParam) / 4, 0);
 			CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc;
 			rootSignatureDesc.Init_1_1(6, rootParameters);
@@ -246,6 +354,9 @@ namespace winrt::DXEth {
 			m_fenceValue = 0;
 		}
 
+
+
+		
 		
 		//mine(0, std::array<uint8_t, 32>(), std::array<uint8_t, 32>(), 0, getBatchSize());
 	}
@@ -339,6 +450,10 @@ namespace winrt::DXEth {
 		uint64_t startNonce,
 		uint64_t count
 	) {
+#ifdef WIN_PORT
+		//OutputDebugString(L"Swap chain presing !\n");
+		swapChain->Present(0, 0);
+#endif
 		//epoch = 0;
 		//double d = 7357883872081186;
 		//h256 boundary = h256{ u256((u512(1) << 256) / d) };
@@ -367,8 +482,9 @@ namespace winrt::DXEth {
 		std::string cur_header = dev::toString(m_header);
 		memcpy(param.target, m_boundary.data(), m_boundary.size);
 		memcpy(param.header, m_header.data(), m_header.size);
-		int shade_threads = 16 ;
-		int num_threads = (m_batchSize) / shade_threads;
+		int shade_threads = 64;
+		int num_threads = (m_batchSize * 2 ) / shade_threads;
+		//num_threads = (2048 * 4) / 32;//(2048/128 ) * 2;
 		//num_threads = (256 * 64 * 64) / shade_threads;
 		auto startTime = std::chrono::high_resolution_clock::now();
 		{ // run mining
@@ -398,7 +514,12 @@ namespace winrt::DXEth {
 			m_d3d12ComputeCommandList->SetPipelineState(m_minePipelineState.get());
 			m_d3d12ComputeCommandList->SetComputeRootSignature(m_mineRootSignature.get());
 			for (size_t i = 0; i < 4; i++) {
-				m_d3d12ComputeCommandList->SetComputeRootUnorderedAccessView(i, m_datasetBuffers[i]->GetGPUVirtualAddress());
+				//ORIG
+				//m_d3d12ComputeCommandList->SetComputeRootUnorderedAccessView(i, m_datasetBuffers[i]->GetGPUVirtualAddress());
+				//SRV
+				//m_d3d12ComputeCommandList->SetComputeRootShaderResourceView(i, m_datasetBuffers[i]->GetGPUVirtualAddress());
+				//CBUFF
+				m_d3d12ComputeCommandList->SetComputeRootShaderResourceView (i, m_datasetBuffers[i]->GetGPUVirtualAddress());
 			}
 			m_d3d12ComputeCommandList->SetComputeRootUnorderedAccessView(4, m_resultBuffer->GetGPUVirtualAddress());
 			m_d3d12ComputeCommandList->SetComputeRoot32BitConstants(5, sizeof(param) / 4, reinterpret_cast<void*>(&param), 0);
@@ -419,8 +540,9 @@ namespace winrt::DXEth {
 				D3D12_RESOURCE_STATE_COPY_SOURCE, D3D12_RESOURCE_STATE_COMMON));
 
 			check_hresult(m_d3d12ComputeCommandList->Close());
+			//m_d3d12ComputeCommandList->SetName(L"minercmdlist");
 			ID3D12CommandList* ppCommandLists[] = { m_d3d12ComputeCommandList.get() };
-
+			//m_d3d12ComputeCommandQueue->SetName(L"mineshader");
 			m_d3d12ComputeCommandQueue->ExecuteCommandLists(1, ppCommandLists);
 			waitForQueue(m_d3d12ComputeCommandQueue);
 
@@ -475,8 +597,6 @@ namespace winrt::DXEth {
 				OutputDebugString(L"\nfinal hash: ");
 				OutputDebugString(s2ws(to_hex(ethash_res.final_hash)).c_str());
 				OutputDebugString(L"\n");
-				md[0].nonces[i].nonce[1] = 0;
-				md[0].nonces[i].nonce[0] = 0;
 				//OutputDebugString(L"mix hash: ");
 				//OutputDebugString(s2ws(to_hex(ethash_res.mix_hash)).c_str());
 				//OutputDebugString(L"\n"); 
@@ -573,7 +693,9 @@ namespace winrt::DXEth {
 		auto mhs = (float)(num_threads * shade_threads) / (float)ms;  //
 		//mhs = (float)m_batchSize / (float)ms;
 		if (runs == 0 || ((endTime - last_mine_print) / std::chrono::microseconds(1) ) > (1000000)) {
+			//m_d3d12Device->
 			last_mine_print = endTime;
+			std::cout << "MHS: " << mhs << "\n";
 			OutputDebugString(L"\nMHS: ");
 			//mhs = mhs * 64;// * 8;
 			OutputDebugString(std::to_wstring(mhs ).c_str());
@@ -691,7 +813,7 @@ namespace winrt::DXEth {
 
 		{ // run dataset generation
 			uint32_t numDatasetElements = datasetSize / hashBytes;
-			uint32_t batchSize = std::min(m_batchSize, numDatasetElements);
+			uint32_t batchSize = min(m_batchSize, numDatasetElements);
 			GenerateDatasetParam param = {};
 			param.datasetGenerationOffset = 0;
 			param.numCacheElements = ethash_context.light_cache_num_items;//ORIG : cacheSize / hashBytes;
@@ -757,7 +879,6 @@ namespace winrt::DXEth {
 				PUT_GENERIC_COM_PTR(m_resultReadbackBuffer)
 			));
 		}
-
 		m_epoch = epoch;
 	}
 
@@ -775,4 +896,32 @@ namespace winrt::DXEth {
 		}
 		return l;
 	}
+
 }
+#ifdef WIN_PORT
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg)
+	{
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+
+	case WM_PAINT:
+	{
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(hwnd, &ps);
+
+
+
+		FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
+
+		EndPaint(hwnd, &ps);
+	}
+	return 0;
+
+	}
+	return DefWindowProc(hwnd, uMsg, wParam, lParam);
+}
+#endif
+

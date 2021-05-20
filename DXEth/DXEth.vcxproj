@@ -155,7 +155,7 @@
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\dev\vcpkg\installed\x64-uwp\include;C:\crypto\FINALMINERS\ethash\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsWinRT>
-      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -163,7 +163,7 @@
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">D3d12.lib;DXGI.lib;WindowsApp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">D3d12.lib;DXGI.lib;WindowsApp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D3d12.lib;DXGI.lib;WindowsApp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D3d12.lib;DXGI.lib;WindowsApp.lib;C:\crypto\FINALMINERS\ethash\build\lib\ethash\Debug\ethash.lib;C:\crypto\FINALMINERS\ethash\build\lib\keccak\Debug\keccak.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D3d12.lib;DXGI.lib;WindowsApp.lib;C:\crypto\FINALMINERS\ethash\build\lib\ethash\Release\ethash.lib;C:\crypto\FINALMINERS\ethash\build\lib\keccak\Release\keccak.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\dev\vcpkg\installed\x64-uwp\lib;C:\crypto\FINALMINERS\ethash\include</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>

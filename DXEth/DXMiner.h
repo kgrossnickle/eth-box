@@ -12,6 +12,10 @@
 #include <codecvt>
 #include <ethash/ethash.hpp>
 
+#ifdef WIN_PORT
+#include <wrl.h>
+#endif
+
 namespace winrt::DXEth {
 	struct solution {
 		std::string header;
@@ -62,7 +66,14 @@ namespace winrt::DXEth {
 		void prepareEpoch();
 		void set_boundary_from_diff();
 		std::chrono::steady_clock::time_point last_mine_print;
-
+		#ifdef WIN_PORT
+		Microsoft::WRL::ComPtr<IDXGISwapChain> swapChain;
+		#endif
+		#ifndef WIN_PORT
+				com_ptr<IDXGISwapChain> swapChain;
+		#endif
+		HWND mhMainWnd;
+		HINSTANCE mhAppInst = NULL;
 	private:
 		void waitForQueue(com_ptr<ID3D12CommandQueue> &q);
 		com_ptr<ID3D12Debug> m_debugController;

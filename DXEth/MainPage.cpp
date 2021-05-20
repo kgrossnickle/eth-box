@@ -213,8 +213,8 @@ namespace winrt::DXEth::implementation
         auto x = constants.GetCacheSize(0);
         miner = DXMiner(0);
 
-        miner.set_test_vars();
-        miner.mine_forever();
+        //miner.set_test_vars();
+        //miner.mine_forever();
         
     }
 
@@ -500,7 +500,9 @@ namespace winrt::DXEth::implementation
     winrt::fire_and_forget MainPage::Button_Click(IInspectable const&, RoutedEventArgs const&) {
         //std::thread t1(start_mining);
         co_await winrt::resume_background();
-        main_loop();
+        miner.set_test_vars();
+        miner.mine_forever();
+        //main_loop();
 
         //return NULL;
     }

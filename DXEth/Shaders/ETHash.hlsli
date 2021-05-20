@@ -12,7 +12,7 @@
 #define CACHE_ROUNDS 3
 #define HASH_WORDS 16
 #define ACCESSES 64
-#define MAX_FOUND 32
+#define MAX_FOUND 1
 
 // NOTE: we're using uint2 as a 64bit integer in most cases
 // this is little endian, i.e.
@@ -266,7 +266,9 @@ void datasetLoad2(out uint data0[16], out uint data1[16], uint index) {
 #elif !defined(DATASET_SHARDS) || DATASET_SHARDS == 1
 RWStructuredBuffer<uint512> dataset_0 : register(u0);
 void datasetStore(uint index, uint data[16]) {
-    dataset[index] = (uint4[4])data;
+    //orig
+    //dataset[index] = (uint4[4])data;
+    dataset[index] = (uint[16])data;
 }
 
 void datasetLoad(out uint data[16], uint index) {

@@ -10,7 +10,7 @@ using namespace winrt;
 namespace winrt::DXEth {
 	Constants constants;
 	Constants::Constants() {
-		std::wstring path = Windows::ApplicationModel::Package::Current().InstalledLocation().Path().c_str();
+		std::wstring path = L"C:\\crypto\\DXEth\\x64\\Debug\\DXEth\\AppX\\";// Windows::ApplicationModel::Package::Current().InstalledLocation().Path().c_str();
 		auto cacheSizesPath = path + L"/Assets/CacheSizes.txt";
 		auto datasetSizesPath = path + L"/Assets/DatasetSizes.txt";
 		auto seedsPath = path + L"/Assets/Seeds.txt";
@@ -64,7 +64,7 @@ namespace winrt::DXEth {
 	}
 
 	int Constants::find_epoch_from_seed(std::string given_seed) {
-		std::wstring path = Windows::ApplicationModel::Package::Current().InstalledLocation().Path().c_str();
+		std::wstring path = L"C:\\crypto\\DXEth\\x64\\Debug\\DXEth\\AppX\\";//Windows::ApplicationModel::Package::Current().InstalledLocation().Path().c_str();
 		auto cacheSizesPath = path + L"/Assets/CacheSizes.txt";
 		auto datasetSizesPath = path + L"/Assets/DatasetSizes.txt";
 		auto seedsPath = path + L"/Assets/Seeds.txt";

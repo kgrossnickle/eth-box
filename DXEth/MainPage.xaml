@@ -9,7 +9,7 @@
     <Pivot x:Name="pivot" Title="DXEth">
         <PivotItem x:Name="controlsPivotItem" Header="Controls">
             <StackPanel Spacing="8" HorizontalAlignment="Left">
-                <Button x:Name="bgtaskbutton" Click="Button_Click">bgtask</Button>
+                <Button x:Name="bgtaskbutton" Click="Button_Click">bgtask w X x 128 REAL</Button>
                 <ComboBox x:Name="devicesComboBox" Header="Device" Width="300" />
                 <TextBox x:Name="poolAddressTextBox" Header="Pool Address" Width="300" />
                 <TextBox x:Name="usernameTextBox" Header="Username" Width="300" />
