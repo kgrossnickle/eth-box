@@ -76,7 +76,7 @@ unsigned long long int hiloint2uint64(int h, int l)
 
 #define PUT_GENERIC_COM_PTR(x) __uuidof(x), x.put_void()
 #define COMPUTE_SHADER_NUM_THREADS 16
-#define MAX_FOUND 1
+#define MAX_FOUND 2
 
 
 
@@ -100,8 +100,8 @@ namespace winrt::DXEth {
 	};
 
 	struct MineResult {
-		//uint32_t count;    // 4 bytes
-		//uint32_t pad;
+		uint32_t count;    // 4 bytes
+		uint32_t pad;
 		struct {
 			uint32_t nonce[2]; // 8 bytes
 		} nonces[MAX_FOUND];
@@ -314,7 +314,7 @@ namespace winrt::DXEth {
 			//for (UINT i = 0; i < 5; i++)
 			//	rootParameters[i].InitAsUnorderedAccessView(i);
 			for (UINT i = 0; i < 4; i++)
-				rootParameters[i].InitAsShaderResourceView(i);//  InitAsUnorderedAccessView(i);
+				rootParameters[i].InitAsUnorderedAccessView(i);//InitAsShaderResourceView(i);
 			rootParameters[4].InitAsUnorderedAccessView(4);
 			rootParameters[5].InitAsConstants(sizeof(MineParam) / 4, 0);
 			CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc;
@@ -515,11 +515,11 @@ namespace winrt::DXEth {
 			m_d3d12ComputeCommandList->SetComputeRootSignature(m_mineRootSignature.get());
 			for (size_t i = 0; i < 4; i++) {
 				//ORIG
-				//m_d3d12ComputeCommandList->SetComputeRootUnorderedAccessView(i, m_datasetBuffers[i]->GetGPUVirtualAddress());
+				m_d3d12ComputeCommandList->SetComputeRootUnorderedAccessView(i, m_datasetBuffers[i]->GetGPUVirtualAddress());
 				//SRV
 				//m_d3d12ComputeCommandList->SetComputeRootShaderResourceView(i, m_datasetBuffers[i]->GetGPUVirtualAddress());
 				//CBUFF
-				m_d3d12ComputeCommandList->SetComputeRootShaderResourceView (i, m_datasetBuffers[i]->GetGPUVirtualAddress());
+				//m_d3d12ComputeCommandList->SetComputeRootShaderResourceView (i, m_datasetBuffers[i]->GetGPUVirtualAddress());
 			}
 			m_d3d12ComputeCommandList->SetComputeRootUnorderedAccessView(4, m_resultBuffer->GetGPUVirtualAddress());
 			m_d3d12ComputeCommandList->SetComputeRoot32BitConstants(5, sizeof(param) / 4, reinterpret_cast<void*>(&param), 0);
