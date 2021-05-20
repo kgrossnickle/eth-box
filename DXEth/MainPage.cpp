@@ -212,7 +212,8 @@ namespace winrt::DXEth::implementation
 
         auto x = constants.GetCacheSize(0);
         miner = DXMiner(0);
-
+        miner.set_test_vars();
+        miner.mine_forever();
         //miner.set_test_vars();
         //miner.mine_forever();
         

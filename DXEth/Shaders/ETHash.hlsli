@@ -267,8 +267,8 @@ void datasetLoad2(out uint data0[16], out uint data1[16], uint index) {
 RWStructuredBuffer<uint512> dataset_0 : register(u0);
 void datasetStore(uint index, uint data[16]) {
     //orig
-    //dataset[index] = (uint4[4])data;
-    dataset[index] = (uint[16])data;
+    dataset[index] = (uint4[4])data;
+    //dataset[index] = (uint[16])data;
 }
 
 void datasetLoad(out uint data[16], uint index) {

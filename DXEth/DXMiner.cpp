@@ -415,7 +415,8 @@ namespace winrt::DXEth {
 		m_seed = "510e4e770828ddbf7f7b00ab00a9f6adaf81c0dc9cc85f1f8249c256942d61d9"; //seed = 2
 		m_header = h256(m_header_hash);
 		m_boundary = h256(ez_targ);
-		m_cur_nonce = 0xa022ca5f9296443f - 8;
+		// c231ca663a509ac5 should be solution maybe?
+		m_cur_nonce = 0xc231ca663a509ac5 - 8;
 		m_block_num = 12423113;
 		has_block_info = true;
 		has_boundary = true;
@@ -482,8 +483,9 @@ namespace winrt::DXEth {
 		std::string cur_header = dev::toString(m_header);
 		memcpy(param.target, m_boundary.data(), m_boundary.size);
 		memcpy(param.header, m_header.data(), m_header.size);
-		int shade_threads = 64;
-		int num_threads = (m_batchSize * 2 ) / shade_threads;
+		int shade_threads = 512;
+		int num_threads = (m_batchSize * 8 ) / shade_threads;
+		//num_threads = 2048 / shade_threads;
 		//num_threads = (2048 * 4) / 32;//(2048/128 ) * 2;
 		//num_threads = (256 * 64 * 64) / shade_threads;
 		auto startTime = std::chrono::high_resolution_clock::now();
