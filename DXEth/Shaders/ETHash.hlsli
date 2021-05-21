@@ -197,7 +197,6 @@ void keccak_256_768(out uint dst[8], in uint src[24]) {
 typedef struct {
     uint4 data[4];
 } uint512;
-
 // The DAG. Note that each DAG entry is 512 bits.
 // so 16 uints makes up a DAG entry
 // we need to split the dataset into 4 parts
@@ -213,7 +212,7 @@ void datasetStore(uint index, uint data[16]) {
 
     shard = index % 4;
     index = index / 4;
-
+    
     if (shard == 0)
         dataset0[index] = (uint4[4])data;
     else if (shard == 1)
@@ -223,6 +222,26 @@ void datasetStore(uint index, uint data[16]) {
     else if (shard == 3)
         dataset3[index] = (uint4[4])data;
 }
+void datasetStoreNew(uint index, uint data[16]) {
+    uint shard, i;
+    //8519646 is num dataset elements @ epoich 2
+    // max is 17039294 epoch 2
+    //        8519647
+    //        73007062
+    //shard = index / (8519647 / 3);
+                
+    //index = index / 4;
+    //index /= 2;
+    if (index <= 24335687)
+        dataset0[index] = (uint4[4])data;
+    else if (index <= 24335687)
+        dataset1[index - 24335687] = (uint4[4])data;
+    else if (index <= 73007061)
+        dataset2[index - 48671374] = (uint4[4])data;
+    else if (index  > 73007061)
+        dataset3[index - 73007061] = (uint4[4])data;
+}
+
 
 void datasetLoad(out uint data[16], uint index) {
     uint shard;

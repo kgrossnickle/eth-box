@@ -281,7 +281,7 @@ uint keccak_256_768_first_entry( inout uint2 st[25]) {
 void datasetLoad(out uint data[16], uint index) {
 
     uint shard;
-    shard = index % 4;
+    shard = index  % 4;
     index = index / 4;
     if (shard == 0) {
         //data = (uint[16])dataset0.Load(index).data;
@@ -301,7 +301,35 @@ void datasetLoad(out uint data[16], uint index) {
     }
 }
 
+void datasetLoadNew(out uint data[16], uint index) {
+    if (index <= 24335687)
+        data = (uint[16])dataset0[index].data;
+    else if (index <= 24335687)
+        data = (uint[16])dataset1[index - 24335687].data;
+    else if (index <= 73007061)
+        data = (uint[16])dataset2[index - 24335687].data;
+    else if (index > 73007061)
+        data = (uint[16])dataset3[index - 73007061].data;
+}
 
+void datasetLoad2New(out uint data[16], out uint data2[16],uint index) {
+    if (index <= 24335687) {
+        data = (uint[16])dataset0.Load(index).data;
+        data2 = (uint[16])dataset0.Load(index+1).data;
+    }
+    else if (index <= 24335687) {
+        data = (uint[16])dataset1.Load(index - 24335687).data;
+        data = (uint[16])dataset1.Load(index - 24335687+1).data;
+    }
+    else if (index <= 73007061) {
+        data = (uint[16])dataset2.Load(index - 24335687).data;
+        data = (uint[16])dataset2.Load(index - 24335687+1).data;
+    }
+    else if (index > 73007061) {
+        data = (uint[16])dataset3.Load(index - 73007061).data;
+        data = (uint[16])dataset3.Load(index - 73007061+1).data;
+    }
+}
 /*
 uint le_to_be(uint num) {
 
@@ -326,7 +354,7 @@ uint le_to_be(uint num) {
 // headerNonce is [header .. nonce]
 
 */
-[numthreads(512, 1, 1)]
+[numthreads(16, 1, 1)]
 void main(uint3 tid : SV_DispatchThreadID) {
 
 
@@ -386,19 +414,20 @@ void main(uint3 tid : SV_DispatchThreadID) {
         mix0[i] = temp0[i];
         mix1[i] = temp0[i];
     }
-
+    uint maxp = 0;
     start_seed = concat[0].x;
     //[unroll(ACCESSES)]
     [unroll]
     for (i = 0; i < 64; i++) {
         j = i % 32;
         parentIndex = fnv(i ^ start_seed, j < 16 ? mix0[j % 16] : mix1[j % 16]) % (numDatasetElements / 2);
-        datasetLoad(temp0, parentIndex * 2);
-        datasetLoad(temp1, (parentIndex * 2) + 1);
+        datasetLoad2New(temp0, temp1,parentIndex * 2);
+        //datasetLoadNew(temp1, (parentIndex * 2) + 1);
         fnvHash(mix0, temp0);
         fnvHash(mix1, temp1);
-    }
 
+    }
+    
     //ORIG
     // compress mix into 256 bits
     [unroll]

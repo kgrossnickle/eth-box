@@ -274,9 +274,12 @@ namespace winrt::DXEth {
 		std::cout << "post swap , now pres\n";
 #endif
 		//swapChain->Present(0, DXGI_PRESENT_TEST);
-		//#ifdef WIN_PORT
-		std::wstring AppPath = L"C:\\crypto\\DXEth\\x64\\Debug\\DXEth\\AppX\\";
-		//#endif
+		#ifdef WIN_PORT
+				std::wstring AppPath = L"C:\\crypto\\DXEth\\x64\\Debug\\DXEth\\AppX\\";// Windows::ApplicationModel::Package::Current().InstalledLocation().Path().c_str();
+		#endif
+		#ifndef WIN_PORT
+				std::wstring AppPath = Windows::ApplicationModel::Package::Current().InstalledLocation().Path().c_str();
+		#endif
 		//#ifndef WIN_PORT
 		//std::wstring AppPath = Windows::ApplicationModel::Package::Current().InstalledLocation().Path().c_str();
 		//#endif
@@ -483,9 +486,9 @@ namespace winrt::DXEth {
 		std::string cur_header = dev::toString(m_header);
 		memcpy(param.target, m_boundary.data(), m_boundary.size);
 		memcpy(param.header, m_header.data(), m_header.size);
-		int shade_threads = 512;
+		int shade_threads = 16;
 		int num_threads = (m_batchSize * 8 ) / shade_threads;
-		//num_threads = 2048 / shade_threads;
+		//num_threads = 1024 / shade_threads;
 		//num_threads = (2048 * 4) / 32;//(2048/128 ) * 2;
 		//num_threads = (256 * 64 * 64) / shade_threads;
 		auto startTime = std::chrono::high_resolution_clock::now();
@@ -575,6 +578,8 @@ namespace winrt::DXEth {
 			//OutputDebugString(L"\n");
 			if (res_nonce != 0 && res_nonce != prev_res_nonce) {
 				prev_res_nonce = res_nonce;
+				OutputDebugString(L"\n nonce0: ");
+				OutputDebugString(std::to_wstring(md[0].nonces[i].nonce[0]).c_str());
 				OutputDebugString(L"\n TOGETHER: ");
 				
 				OutputDebugString(std::to_wstring(res_nonce).c_str());

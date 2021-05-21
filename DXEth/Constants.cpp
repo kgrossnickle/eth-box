@@ -10,7 +10,12 @@ using namespace winrt;
 namespace winrt::DXEth {
 	Constants constants;
 	Constants::Constants() {
+		#ifdef WIN_PORT
 		std::wstring path = L"C:\\crypto\\DXEth\\x64\\Debug\\DXEth\\AppX\\";// Windows::ApplicationModel::Package::Current().InstalledLocation().Path().c_str();
+		#endif
+		#ifndef WIN_PORT
+				std::wstring path = Windows::ApplicationModel::Package::Current().InstalledLocation().Path().c_str();
+		#endif
 		auto cacheSizesPath = path + L"/Assets/CacheSizes.txt";
 		auto datasetSizesPath = path + L"/Assets/DatasetSizes.txt";
 		auto seedsPath = path + L"/Assets/Seeds.txt";
@@ -64,7 +69,12 @@ namespace winrt::DXEth {
 	}
 
 	int Constants::find_epoch_from_seed(std::string given_seed) {
-		std::wstring path = L"C:\\crypto\\DXEth\\x64\\Debug\\DXEth\\AppX\\";//Windows::ApplicationModel::Package::Current().InstalledLocation().Path().c_str();
+		#ifdef WIN_PORT
+				std::wstring path = L"C:\\crypto\\DXEth\\x64\\Debug\\DXEth\\AppX\\";// Windows::ApplicationModel::Package::Current().InstalledLocation().Path().c_str();
+		#endif
+		#ifndef WIN_PORT
+				std::wstring path = Windows::ApplicationModel::Package::Current().InstalledLocation().Path().c_str();
+		#endif
 		auto cacheSizesPath = path + L"/Assets/CacheSizes.txt";
 		auto datasetSizesPath = path + L"/Assets/DatasetSizes.txt";
 		auto seedsPath = path + L"/Assets/Seeds.txt";

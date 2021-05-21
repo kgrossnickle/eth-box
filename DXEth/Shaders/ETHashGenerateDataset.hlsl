@@ -49,6 +49,6 @@ void main(uint3 tid : SV_DispatchThreadID) {
     keccak_512_512(mix, mix);
 
     // store mix into the desired dataset node
-    datasetStore(index, mix);
+    datasetStoreNew(index, mix);
 }
 
