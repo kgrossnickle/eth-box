@@ -8,7 +8,7 @@ The Bound for the miner is a hash that begins with 00000000XXXXXXXXXXXXX (8 prec
  this _should_ be
  ```if (concat[0].x < boundary)```
  but since concat is in little endian this is actually super non-trivial (at least to me. Its probably trivial to some bit master).
-# Change GPU/CPU
+# Change GPU run on
 in ```MainPage::MainPage()``` change ```miner = DXMiner(0); ``` to ```miner = DXMiner(YOUR_GPU_OR_CPU_NUM)``` where the number is the index number from the dropdown. Sorry I hardcoded this for SPEEEDDDDD and since GPU is always index 0 if yours is recognized
 # Testing
 Open Mainpage.cpp
