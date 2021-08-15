@@ -101,7 +101,7 @@ namespace winrt::DXEth {
 		com_ptr<ID3D12Resource> m_cacheBuffer;
 		com_ptr<ID3D12Resource> m_resultBuffer;
 		com_ptr<ID3D12Resource> m_resultReadbackBuffer;
-		std::array<com_ptr<ID3D12Resource>, 4> m_datasetBuffers;
+		std::array<com_ptr<ID3D12Resource>, 6> m_datasetBuffers;
 		
 		std::array<com_ptr<ID3D12Resource>, 4> m_ethashDatasetShardResources;
 		com_ptr<ID3D12Resource> m_ethashCacheResource;

@@ -299,6 +299,7 @@ void datasetLoad(out uint data[16], uint index) {
         //data = (uint[16])dataset3.Load(index).data;
         data = (uint[16])dataset3[index].data;
     }
+
 }
 
 void datasetLoadNew(out uint data[16], uint index) {
@@ -384,7 +385,7 @@ void main(uint3 tid : SV_DispatchThreadID) {
     uint mix1[16];
     uint temp0[16];
     uint temp1[16];
-
+    uint temp3[32];
     //uint digest[8];
     uint2 concat[25];
     //uint2 st[25];
@@ -421,8 +422,9 @@ void main(uint3 tid : SV_DispatchThreadID) {
     for (i = 0; i < 64; i++) {
         j = i % 32;
         parentIndex = fnv(i ^ start_seed, j < 16 ? mix0[j % 16] : mix1[j % 16]) % (numDatasetElements / 2);
-        datasetLoad2New(temp0, temp1,parentIndex * 2);
-        //datasetLoadNew(temp1, (parentIndex * 2) + 1);
+        //datasetLoad2New(temp0, temp1,parentIndex * 2);
+        datasetLoad(temp0, (parentIndex * 2) );
+        datasetLoad(temp1, (parentIndex * 2) + 1);
         fnvHash(mix0, temp0);
         fnvHash(mix1, temp1);
 
