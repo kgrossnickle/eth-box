@@ -11,6 +11,8 @@ Visual Studio 2019 --
 2. I added prebuilt libraries of ethash (https://github.com/chfast/ethash) , if you have trouble you may need to build this yourself with WinRT bindings. Good luck, its a pain in the booty. If you do need this the process would be git clone -> follow their build directions and change cmake command to output as winrt. Then change properties -> linker -> additinal libs to point to there instead of the ones I added. IDK if this is needed since I did the grunt work.
 ## Building REALLY Important Notes
 1. This can only build in debug X64 mode right now. Probably trivial to make othermodes work, except you also need to rebuild ethash in release etc. mode.
+
+if you have any problems make an issue and I'll try to help
 # Running on Xbox
 First you will need a Microsoft Developer account to use dev mode on your Xbox. Unfortunately... this used to cost $10 and now costs $19. Really dumb IMO.
 Then you will need to put your Xbox in developer mode.
