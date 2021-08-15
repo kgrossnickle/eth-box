@@ -214,8 +214,6 @@ namespace winrt::DXEth::implementation
         miner = DXMiner(0);
         //miner.set_test_vars();
         //miner.mine_forever();
-        //miner.set_test_vars();
-        //miner.mine_forever();
         
     }
 
@@ -501,8 +499,6 @@ namespace winrt::DXEth::implementation
     winrt::fire_and_forget MainPage::Button_Click(IInspectable const&, RoutedEventArgs const&) {
         //std::thread t1(start_mining);
         co_await winrt::resume_background();
-        //miner.set_test_vars();
-        //miner.mine_forever();
         main_loop();
 
         //return NULL;
@@ -529,3 +525,9 @@ namespace winrt::DXEth::implementation
 }
 
 
+
+
+void winrt::DXEth::implementation::MainPage::devicesComboBox_SelectionChanged(winrt::Windows::Foundation::IInspectable const& sender, winrt::Windows::UI::Xaml::Controls::SelectionChangedEventArgs const& e)
+{
+
+}

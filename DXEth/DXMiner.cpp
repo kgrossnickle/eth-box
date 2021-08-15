@@ -413,6 +413,7 @@ namespace winrt::DXEth {
 	}
 	void DXMiner::set_test_vars() {
 		m_header_hash = "0x214914e1de29ad0d910cdf31845f73ad534fb2d294e387cd22927392758cc334";
+		// Not used currently. The bounadry is always 8 preceding 0's as of now. Check BUGS in README
 		std::string ez_targ = "0x00ff1c01710000000000000000000000d1ff1c01710000000000000000000000";
 		m_seed = "c57b49f1a72c107689bf82dc84a90a391527434dc641d05b9ef255554a647e1b"; // seed 414
 		m_seed = "510e4e770828ddbf7f7b00ab00a9f6adaf81c0dc9cc85f1f8249c256942d61d9"; //seed = 2

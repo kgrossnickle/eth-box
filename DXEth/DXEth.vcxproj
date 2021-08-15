@@ -108,7 +108,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
     <ClCompile>
       <PreprocessorDefinitions>_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\dev\vcpkg\installed\x64-uwp\include;C:\crypto\FINALMINERS\ethash\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\dev\vcpkg\installed\x64-uwp\include;$(ProjectDir)\ethash\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsWinRT>
     </ClCompile>
     <Link>
@@ -121,8 +121,8 @@
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D3d12.lib;DXGI.lib;WindowsApp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Link>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D3d12.lib;DXGI.lib;WindowsApp.lib;C:\crypto\FINALMINERS\ethash\build\lib\ethash\Debug\ethash.lib;C:\crypto\FINALMINERS\ethash\build\lib\keccak\Debug\keccak.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\dev\vcpkg\installed\x64-uwp\lib;C:\crypto\FINALMINERS\ethash\include</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D3d12.lib;DXGI.lib;WindowsApp.lib;$(ProjectDir)\ethash\build\lib\ethash\Debug\ethash.lib;$(ProjectDir)\ethash\build\lib\keccak\Debug\keccak.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\dev\vcpkg\installed\x64-uwp\lib;</AdditionalLibraryDirectories>
       <SubSystem Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Windows</SubSystem>
     </Link>
     <FxCompile>

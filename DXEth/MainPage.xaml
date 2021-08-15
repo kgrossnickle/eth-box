@@ -9,12 +9,12 @@
     <Pivot x:Name="pivot" Title="DXEth">
         <PivotItem x:Name="controlsPivotItem" Header="Controls">
             <StackPanel Spacing="8" HorizontalAlignment="Left">
-                <Button x:Name="bgtaskbutton" Click="Button_Click">bgtask w X x 128 REAL</Button>
-                <ComboBox x:Name="devicesComboBox" Header="Device" Width="300" />
-                <TextBox x:Name="poolAddressTextBox" Header="Pool Address" Width="300" />
-                <TextBox x:Name="usernameTextBox" Header="Username" Width="300" />
-                <PasswordBox x:Name="passwordBox" Header="Password" Width="300" />
-                <Button x:Name="myButton" Click="ClickHandler">Start</Button>
+                <Button x:Name="bgtaskbutton" Click="Button_Click">Start</Button>
+                <ComboBox x:Name="devicesComboBox" Header="Device" Width="300" SelectionChanged="devicesComboBox_SelectionChanged" />
+                <TextBox x:Name="poolAddressTextBox" Header="PlaceHolder" Width="300" />
+                <TextBox x:Name="usernameTextBox" Header="PlaceHolder2" Width="300" />
+                <PasswordBox x:Name="passwordBox" Header="PlaceHolder3" Width="300" />
+                <Button x:Name="myButton" Click="ClickHandler">PLaceHolder Button</Button>
             </StackPanel>
         </PivotItem>
         <PivotItem x:Name="statusPivotItem" Header="Status">
