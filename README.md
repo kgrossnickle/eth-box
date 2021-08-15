@@ -1,5 +1,5 @@
 # Xbox Ethereum Miner
-# Running
+# Building on PC
 ## Prereqs
 Win 10 --
 Visual Studio 2019 --
