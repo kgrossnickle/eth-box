@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\test\benchmarks\ethash_benchmarks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\test\benchmarks\keccak_benchmarks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\test\benchmarks\keccak_utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\test\benchmarks\managed_benchmarks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\test\benchmarks\progpow_benchmarks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\test\benchmarks\threadsync_benchmarks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\test\benchmarks\threadsync_utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\crypto\FINALMINERS\ethash\test\benchmarks\keccak_utils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\crypto\FINALMINERS\ethash\test\benchmarks\threadsync_utils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\crypto\FINALMINERS\ethash\test\benchmarks\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\crypto\FINALMINERS\ethash\build\test\benchmarks\ethash-bench.dir\Windows_TemporaryKey.pfx">
+      <Filter>Resource Files</Filter>
+    </None>
+    <AppxManifest Include="C:\crypto\FINALMINERS\ethash\build\test\benchmarks\ethash-bench.dir\package.appxManifest">
+      <Filter>Resource Files</Filter>
+    </AppxManifest>
+    <Image Include="C:\crypto\FINALMINERS\ethash\build\test\benchmarks\ethash-bench.dir\SmallLogo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="C:\crypto\FINALMINERS\ethash\build\test\benchmarks\ethash-bench.dir\SmallLogo44x44.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="C:\crypto\FINALMINERS\ethash\build\test\benchmarks\ethash-bench.dir\Logo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="C:\crypto\FINALMINERS\ethash\build\test\benchmarks\ethash-bench.dir\StoreLogo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="C:\crypto\FINALMINERS\ethash\build\test\benchmarks\ethash-bench.dir\SplashScreen.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{F56953F9-1321-3621-AFE2-833BB20EBA77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{05088D40-B5E8-3B0D-BD94-26A91DF2C166}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{E36F964C-90D2-3F42-8733-C502F92076BD}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+</Project>

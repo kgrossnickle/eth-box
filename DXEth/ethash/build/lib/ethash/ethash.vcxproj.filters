@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\lib\ethash\ethash.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\lib\ethash\managed.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\lib\ethash\primes.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\lib\ethash\progpow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\crypto\FINALMINERS\ethash\lib\ethash\bit_manipulation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\crypto\FINALMINERS\ethash\lib\ethash\builtins.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\crypto\FINALMINERS\ethash\lib\ethash\endianness.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\crypto\FINALMINERS\ethash\include\ethash\ethash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\crypto\FINALMINERS\ethash\include\ethash\ethash.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\crypto\FINALMINERS\ethash\lib\ethash\ethash-internal.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\crypto\FINALMINERS\ethash\include\ethash\hash_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\crypto\FINALMINERS\ethash\lib\ethash\kiss99.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\crypto\FINALMINERS\ethash\lib\ethash\primes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\crypto\FINALMINERS\ethash\include\ethash\progpow.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\crypto\FINALMINERS\ethash\lib\ethash\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{F56953F9-1321-3621-AFE2-833BB20EBA77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{05088D40-B5E8-3B0D-BD94-26A91DF2C166}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

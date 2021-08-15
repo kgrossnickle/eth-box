@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\lib\keccak\keccak.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\lib\keccak\keccakf800.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\crypto\FINALMINERS\ethash\include\ethash\keccak.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\crypto\FINALMINERS\ethash\include\ethash\keccak.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\crypto\FINALMINERS\ethash\lib\keccak\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{F56953F9-1321-3621-AFE2-833BB20EBA77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{05088D40-B5E8-3B0D-BD94-26A91DF2C166}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

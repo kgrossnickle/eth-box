@@ -1,0 +1,384 @@
+version: 2.1
+
+executors:
+  linux:
+    docker:
+      - image: ethereum/cpp-build-env:11
+
+commands:
+
+  environment-info:
+    steps:
+      - run:
+          name: "Environment info"
+          command: |
+            CC=${CC:-cc}
+            CXX=${CXX:-cpp}
+            echo CC: $CC
+            echo CXX: $CXX
+            $CC --version
+            $CXX --version
+            cmake --version
+
+  install-mips64:
+    steps:
+      - run:
+          name: "Install mips64 toolchain"
+          command: |
+            sudo apt -q update
+            sudo apt -qy install g++-mips64-linux-gnuabi64 qemu-user-static
+
+  install-powerpc64:
+    steps:
+      - run:
+          name: "Install powerpc64 toolchain"
+          command: |
+            sudo apt -q update
+            sudo apt -qy install g++-powerpc64-linux-gnu qemu-user-static
+
+  configure:
+    steps:
+      - run:
+          name: "Configure"
+          # Build "out-of-source" to have better coverage report
+          # (ninja is using relative paths otherwise).
+          working_directory: ~/build
+          command: |
+            cmake ../project -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=/tmp/local $CMAKE_OPTIONS
+
+  build:
+    steps:
+      - run:
+          name: "Build"
+          working_directory: ~/build
+          command: |
+            cmake --build . -- -j $BUILD_PARALLEL_JOBS
+            cmake --build . --target install
+
+  build-tests:
+    steps:
+      - run:
+          name: "Build ethash-test"
+          working_directory: ~/build
+          command: |
+            cmake --build . --target ethash-test -- -j $BUILD_PARALLEL_JOBS
+
+  test:
+    steps:
+      - run:
+          name: "Test"
+          working_directory: ~/build
+          command: |
+            if [ -z "$GTEST_FILTER" ]; then
+              test/ethash-test
+            else
+              test/ethash-test --gtest_filter=$GTEST_FILTER
+            fi
+
+  benchmark:
+    steps:
+      - run:
+          name: "Benchmark"
+          working_directory: ~/build
+          command: |
+            test/ethash-bench
+
+  collect_coverage_gcc:
+    description: "Collect coverage data (GCC)"
+    steps:
+      - run:
+          name: "Collect coverage data (GCC)"
+          working_directory: ~/build
+          command: |
+            lcov --capture --directory . --output-file coverage.lcov --exclude='/usr/*' --exclude="$HOME/.hunter/*" --exclude="$PWD/_deps/*"
+            lcov --zerocounters --directory .
+            rm -rf coverage
+            genhtml coverage.lcov --output-directory coverage --title $CIRCLE_PROJECT_REPONAME
+
+  upload_coverage:
+    description: "Upload coverage data"
+    parameters:
+      flags:
+        type: string
+    steps:
+      - run:
+          name: "Upgrade codecov"
+          command: sudo pip3 install --upgrade --quiet --no-cache-dir codecov
+      - run:
+          name: "Upload to Codecov"
+          command: |
+            # Convert to relative paths
+            sed -i 's|$(pwd)/||' ~/build/coverage.lcov
+            counter=1
+            until codecov --flags <<parameters.flags>> --required --file ~/build/coverage.lcov -X gcov || [ $counter = 5 ]; do
+              counter=$((counter+1))
+              sleep 1
+              echo "Try #$counter..."
+            done
+
+
+  macos-defaults:
+    steps:
+      - run:
+          name: "Install CMake"
+          command: |
+            HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake ninja
+      - run:
+          name: "Install Python3"
+          # Python3 and requests are needed for Hunter upload.
+          command: |
+            export HOMEBREW_NO_AUTO_UPDATE=1
+            if ! brew install python3; then
+              brew upgrade python
+            fi
+            pip3 install -q requests gitpython
+      - checkout
+      - configure
+      - build
+      - test
+
+
+jobs:
+
+  linux-gcc-coverage:
+    docker:
+      - image: ethereum/cpp-build-env:16-gcc-10
+    environment:
+      - BUILD_PARALLEL_JOBS: 2
+      - BUILD_TYPE: Debug
+      - CMAKE_OPTIONS: -DCOVERAGE=ON
+    steps:
+      - checkout
+      - configure
+      - build
+      - test
+      - collect_coverage_gcc
+      - store_artifacts:
+          path: ~/build/coverage
+          destination: coverage-default
+      - upload_coverage:
+          flags: default
+      - run:
+          name: "Install qemu"
+          command: sudo apt -q update && sudo apt -qy install qemu-user-static
+      - run:
+          command: qemu-x86_64-static --cpu qemu64 ~/build/test/ethash-test --gtest_filter='-*_multithreaded.*:*_oom'
+      - collect_coverage_gcc
+      - store_artifacts:
+          path: ~/build/coverage
+          destination: coverage-x86_64
+      - upload_coverage:
+          flags: x86_64
+
+  linux-clang-sanitizers:
+    docker:
+      - image: ethereum/cpp-build-env:16-clang-11
+    environment:
+      - BUILD_PARALLEL_JOBS: 2
+      - CMAKE_OPTIONS: -DSANITIZE=address,undefined,integer,nullability
+      - ASAN_OPTIONS: allocator_may_return_null=1
+      - UBSAN_OPTIONS: halt_on_error=1
+    steps:
+      - checkout
+      - configure
+      - build
+      - test
+      - benchmark
+
+  linux-32bit-asan:
+    environment:
+      - BUILD_PARALLEL_JOBS: 2
+      - BUILD_TYPE: RelWithDebInfo
+      - CMAKE_OPTIONS: -DTOOLCHAIN=cxx11-32bit -DSANITIZE=address
+      - GTEST_FILTER: -*_oom
+      - ASAN_OPTIONS: allocator_may_return_null=1
+    docker:
+      - image: ethereum/cpp-build-env:15-gcc-10-multilib
+    steps:
+      - checkout
+      - configure
+      - build
+      - test
+
+  mips64:
+    environment:
+      - BUILD_PARALLEL_JOBS: 2
+      - TEST_PARALLEL_JOBS: 2
+      - CMAKE_OPTIONS: -DTOOLCHAIN=mips64 -DCMAKE_EXE_LINKER_FLAGS=-static
+    docker:
+      - image: ethereum/cpp-build-env:16-gcc-10
+    steps:
+      - checkout
+      - install-mips64
+      - configure
+      - build-tests
+      - store_artifacts:
+          path: ~/build/test/ethash-test
+          destination: ethash-test
+      - run:
+          name: "Test mips64"
+          working_directory: ~/build
+          command: |  # Software emulation in qemu will not handle threads.
+            qemu-mips64-static test/ethash-test --gtest_filter='-*_multithreaded.*:*_oom'
+
+  powerpc64:
+    environment:
+      - BUILD_PARALLEL_JOBS: 2
+      - TEST_PARALLEL_JOBS: 2
+      - BUILD_TYPE: Debug
+      - CMAKE_OPTIONS: -DTOOLCHAIN=powerpc64 -DCMAKE_EXE_LINKER_FLAGS=-static -DCOVERAGE=ON
+    docker:
+      - image: ethereum/cpp-build-env:16-gcc-10
+    steps:
+      - checkout
+      - install-powerpc64
+      - configure
+      - build-tests
+      - store_artifacts:
+          path: ~/build/test/ethash-test
+          destination: ethash-test
+      - run:
+          name: "Test powerpc64"
+          working_directory: ~/build
+          command: |  # Software emulation in qemu will not handle threads.
+            qemu-ppc64-static test/ethash-test --gtest_filter='-*_multithreaded.*:*_oom'
+      - collect_coverage_gcc
+      - store_artifacts:
+          path: ~/build/coverage
+          destination: coverage
+      - upload_coverage:
+          flags: be
+
+  linux-release:
+    docker:
+      - image: ethereum/cpp-build-env:16-clang-11
+    environment:
+      - BUILD_PARALLEL_JOBS: 4
+      - CMAKE_OPTIONS: -DETHASH_BUILD_TESTS=OFF -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DHUNTER_ENABLED=OFF
+    steps:
+      - checkout
+      - configure
+      - build
+      - persist_to_workspace:
+          root: /tmp/local
+          paths:
+            - "*"
+
+  linux-release-python:
+    docker:
+      - image: quay.io/pypa/manylinux1_x86_64
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/project/dist
+      - run:
+          name: "Build wheels"
+          command: sh scripts/ci/python_build_wheels.sh
+      - run:
+          name: "Tag wheels"
+          working_directory: ~/project/dist
+          command: |
+            find -name '*linux_x86_64.whl' -exec auditwheel repair {} \;
+      - store_artifacts:
+          path: ~/project/dist
+          destination: dist
+      - run:
+          name: "Install CMake"
+          command: |
+            export PATH=/opt/python/cp37-cp37m/bin:$PATH
+            pip install cmake
+      - run:
+          name: "Build source dist"
+          command: |
+            export PATH=/opt/python/cp37-cp37m/bin:$PATH
+            ./setup.py sdist
+      - run:
+          name: "Build wheel with CMake build"
+          command: |
+            export PATH=/opt/python/cp37-cp37m/bin:$PATH
+            ./setup.py bdist_wheel
+      - run:
+          name: "Test"
+          command: |
+            export PATH=/opt/python/cp37-cp37m/bin:$PATH
+            ./setup.py test
+
+  macos-xcode-tsan:
+    environment:
+      - BUILD_PARALLEL_JOBS: 4
+      - CMAKE_OPTIONS: -DSANITIZE=thread
+      - TSAN_OPTIONS: allocator_may_return_null=1
+    macos:
+      xcode: "12.1.0"
+    steps:
+      - macos-defaults
+
+  macos-xcode-old:
+    environment:
+      - BUILD_PARALLEL_JOBS: 4
+    macos:
+      xcode: "10.3.0"
+    steps:
+      - macos-defaults
+
+  macos-release:
+    environment:
+      - BUILD_PARALLEL_JOBS: 4
+      - CMAKE_OPTIONS: -DETHASH_BUILD_TESTS=OFF -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_INSTALL_PREFIX=~/project/dist
+    macos:
+      xcode: "11.3.1"
+    steps:
+      - run:
+          name: "Install CMake"
+          command: |
+            which python3
+            ls -l /usr/local/lib
+            ls -l /usr/local/bin
+            pip3 install -q cmake
+      - checkout
+      - configure
+      - build
+      - run:
+          name: "Test"
+          command: |
+            ./setup.py test
+      - run:
+          name: "Build wheels"
+          command: sh scripts/ci/python_build_wheels.sh
+      - store_artifacts:
+          path: ~/project/dist
+          destination: dist
+
+  cmake-min:
+    environment:
+      CMAKE_OPTIONS: -DHUNTER_RUN_UPLOAD=FALSE
+    docker:
+      - image: circleci/buildpack-deps:buster
+    steps:
+      - run:
+          name: "Install default CMake"
+          command: sudo apt-get -q update && sudo apt-get -qy install cmake
+      - environment-info
+      - checkout
+      - configure
+      - build
+      - test
+
+
+workflows:
+  version: 2
+  ethash:
+    jobs:
+      - linux-gcc-coverage
+      - linux-clang-sanitizers
+      - linux-32bit-asan
+      - mips64
+      - powerpc64
+      - macos-xcode-tsan
+      - macos-xcode-old
+      - linux-release
+      - linux-release-python:
+          requires:
+            - linux-release
+      - macos-release
+      - cmake-min

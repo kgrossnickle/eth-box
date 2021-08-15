@@ -1,0 +1,387 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{302F8922-9C17-3100-AD87-6F3494AF13F2}</ProjectGuid>
+    <ApplicationType>Windows Store</ApplicationType>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <AppContainerApplication>true</AppContainerApplication>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformMinVersion>10.0.19041.0</WindowsTargetPlatformMinVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>ethash-test</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <AppxPackageArtifactsDir>ethash-test.dir\</AppxPackageArtifactsDir>
+    <ProjectPriFullPath>C:\crypto\FINALMINERS\ethash\build\test\unittests\ethash-test.dir\resources.pri</ProjectPriFullPath>
+    <PackageCertificateKeyFile>C:\crypto\FINALMINERS\ethash\build\test\unittests\ethash-test.dir\Windows_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateThumbprint>F63AAC84A0884CDB0126C3CDEA991E36DF064B3E</PackageCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\crypto\FINALMINERS\ethash\build\test\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ethash-test.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ethash-test</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\crypto\FINALMINERS\ethash\build\test\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ethash-test.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ethash-test</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\crypto\FINALMINERS\ethash\build\test\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">ethash-test.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">ethash-test</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\crypto\FINALMINERS\ethash\build\test\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">ethash-test.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">ethash-test</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\crypto\FINALMINERS\ethash\lib;C:\crypto\FINALMINERS\ethash\include;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4068</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;UNICODE;_UNICODE;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;UNICODE;_UNICODE;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\crypto\FINALMINERS\ethash\lib;C:\crypto\FINALMINERS\ethash\include;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\crypto\FINALMINERS\ethash\lib;C:\crypto\FINALMINERS\ethash\include;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\..\lib\ethash\Debug\ethash.lib;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\gtest_maind.lib;..\..\lib\keccak\Debug\keccak.lib;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\gtestd.lib;WindowsApp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/crypto/FINALMINERS/ethash/build/test/unittests/Debug/ethash-test.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/crypto/FINALMINERS/ethash/build/test/Debug/ethash-test.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\crypto\FINALMINERS\ethash\lib;C:\crypto\FINALMINERS\ethash\include;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <DisableSpecificWarnings>4068</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;UNICODE;_UNICODE;NDEBUG;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;UNICODE;_UNICODE;NDEBUG;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\crypto\FINALMINERS\ethash\lib;C:\crypto\FINALMINERS\ethash\include;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\crypto\FINALMINERS\ethash\lib;C:\crypto\FINALMINERS\ethash\include;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\..\lib\ethash\Release\ethash.lib;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\gtest_main.lib;..\..\lib\keccak\Release\keccak.lib;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\gtest.lib;WindowsApp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/crypto/FINALMINERS/ethash/build/test/unittests/Release/ethash-test.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/crypto/FINALMINERS/ethash/build/test/Release/ethash-test.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\crypto\FINALMINERS\ethash\lib;C:\crypto\FINALMINERS\ethash\include;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <DisableSpecificWarnings>4068</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;UNICODE;_UNICODE;NDEBUG;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;UNICODE;_UNICODE;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\crypto\FINALMINERS\ethash\lib;C:\crypto\FINALMINERS\ethash\include;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\crypto\FINALMINERS\ethash\lib;C:\crypto\FINALMINERS\ethash\include;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\..\lib\ethash\MinSizeRel\ethash.lib;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\gtest_maind.lib;..\..\lib\keccak\MinSizeRel\keccak.lib;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\gtestd.lib;WindowsApp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/crypto/FINALMINERS/ethash/build/test/unittests/MinSizeRel/ethash-test.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/crypto/FINALMINERS/ethash/build/test/MinSizeRel/ethash-test.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\crypto\FINALMINERS\ethash\lib;C:\crypto\FINALMINERS\ethash\include;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4068</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;UNICODE;_UNICODE;NDEBUG;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;UNICODE;_UNICODE;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\crypto\FINALMINERS\ethash\lib;C:\crypto\FINALMINERS\ethash\include;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\crypto\FINALMINERS\ethash\lib;C:\crypto\FINALMINERS\ethash\include;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\..\lib\ethash\RelWithDebInfo\ethash.lib;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\gtest_maind.lib;..\..\lib\keccak\RelWithDebInfo\keccak.lib;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\gtestd.lib;WindowsApp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/crypto/FINALMINERS/ethash/build/test/unittests/RelWithDebInfo/ethash-test.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/crypto/FINALMINERS/ethash/build/test/RelWithDebInfo/ethash-test.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\crypto\FINALMINERS\ethash\test\unittests\CMakeLists.txt">
+      <StdOutEncoding>UTF-8</StdOutEncoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/crypto/FINALMINERS/ethash/test/unittests/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/crypto/FINALMINERS/ethash -BC:/crypto/FINALMINERS/ethash/build --check-stamp-file C:/crypto/FINALMINERS/ethash/build/test/unittests/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeFindDependencyMacro.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeParseArguments.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Build\GTest\args.cmake.NOLF;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Build\GTest\internal_deps.id.NOLF;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Build\GTest\types.info.NOLF;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestConfig.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestConfigVersion.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestTargets-debug.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestTargets-release.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestTargets.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\config.cmake;C:\Users\kurtg\.hunter\_Base\Cache\meta\c2ce1f0\GTest\1.8.1\152b849\a37fba7\4830b34\e5fa44f\basic-deps.info.NOLF;C:\Users\kurtg\.hunter\_Base\Cache\meta\c2ce1f0\GTest\1.8.1\152b849\a37fba7\4830b34\e5fa44f\deps.info-TEMP.NOLF;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_add_package.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_add_version.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_apply_copy_rules.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_apply_gate_settings.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_assert_empty_string.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_assert_not_empty_string.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_cache_run.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_cache_server_password.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_cacheable.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_calculate_config_sha1.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_calculate_self.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_calculate_toolchain_sha1.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_check_download_error_message.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_check_flush_needed.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_cmake_args.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_config.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_args_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_cache_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_cache_meta_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_dependency_entry.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_deps_info.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_download.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_download_cache_meta_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_download_cache_raw_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_download_server_url.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_error_page.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_fatal_error.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_final_config.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_finalize.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_find_licenses.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_find_stamps.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_flush_cache_variables.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_cacheable.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_cmake_args.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_configuration_types.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_git_executable.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_keep_package_sources.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_package_deps.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_package_deps_recurse.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_package_sha1.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_package_url.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_passwords_path.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_project_files_to_load.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_http_password.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_init_not_found_counter.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_internal_error.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_jobs_number.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_load_from_cache.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_lock_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_make_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_pack_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_pack_git_self.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_pack_git_submodule.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_parse_cmake_args_for_keyword.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_patch_unrelocatable_text_files.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_pick_scheme.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_print_cmd.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_private_data_password.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_read_http_credentials.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_register_dependency.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_sanity_checks.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_save_to_cache.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_set_config_location.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_setup_msvc.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_sleep_before_download.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_status_debug.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_status_print.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_unpack_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_unsetvar.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_upload_cache.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_upload_password.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_upload_single_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_upload_to_custom_server.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_user_error.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\projects\GTest\hunter.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\schemes\url_sha1_cmake.cmake.in;C:\crypto\FINALMINERS\ethash\cmake\cable\defaults\HunterCacheServers-passwords.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\crypto\FINALMINERS\ethash\build\test\unittests\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/crypto/FINALMINERS/ethash/test/unittests/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/crypto/FINALMINERS/ethash -BC:/crypto/FINALMINERS/ethash/build --check-stamp-file C:/crypto/FINALMINERS/ethash/build/test/unittests/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeFindDependencyMacro.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeParseArguments.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Build\GTest\args.cmake.NOLF;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Build\GTest\internal_deps.id.NOLF;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Build\GTest\types.info.NOLF;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestConfig.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestConfigVersion.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestTargets-debug.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestTargets-release.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestTargets.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\config.cmake;C:\Users\kurtg\.hunter\_Base\Cache\meta\c2ce1f0\GTest\1.8.1\152b849\a37fba7\4830b34\e5fa44f\basic-deps.info.NOLF;C:\Users\kurtg\.hunter\_Base\Cache\meta\c2ce1f0\GTest\1.8.1\152b849\a37fba7\4830b34\e5fa44f\deps.info-TEMP.NOLF;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_add_package.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_add_version.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_apply_copy_rules.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_apply_gate_settings.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_assert_empty_string.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_assert_not_empty_string.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_cache_run.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_cache_server_password.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_cacheable.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_calculate_config_sha1.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_calculate_self.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_calculate_toolchain_sha1.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_check_download_error_message.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_check_flush_needed.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_cmake_args.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_config.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_args_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_cache_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_cache_meta_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_dependency_entry.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_deps_info.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_download.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_download_cache_meta_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_download_cache_raw_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_download_server_url.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_error_page.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_fatal_error.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_final_config.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_finalize.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_find_licenses.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_find_stamps.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_flush_cache_variables.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_cacheable.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_cmake_args.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_configuration_types.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_git_executable.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_keep_package_sources.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_package_deps.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_package_deps_recurse.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_package_sha1.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_package_url.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_passwords_path.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_project_files_to_load.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_http_password.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_init_not_found_counter.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_internal_error.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_jobs_number.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_load_from_cache.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_lock_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_make_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_pack_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_pack_git_self.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_pack_git_submodule.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_parse_cmake_args_for_keyword.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_patch_unrelocatable_text_files.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_pick_scheme.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_print_cmd.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_private_data_password.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_read_http_credentials.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_register_dependency.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_sanity_checks.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_save_to_cache.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_set_config_location.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_setup_msvc.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_sleep_before_download.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_status_debug.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_status_print.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_unpack_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_unsetvar.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_upload_cache.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_upload_password.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_upload_single_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_upload_to_custom_server.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_user_error.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\projects\GTest\hunter.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\schemes\url_sha1_cmake.cmake.in;C:\crypto\FINALMINERS\ethash\cmake\cable\defaults\HunterCacheServers-passwords.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\crypto\FINALMINERS\ethash\build\test\unittests\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/crypto/FINALMINERS/ethash/test/unittests/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/crypto/FINALMINERS/ethash -BC:/crypto/FINALMINERS/ethash/build --check-stamp-file C:/crypto/FINALMINERS/ethash/build/test/unittests/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeFindDependencyMacro.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeParseArguments.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Build\GTest\args.cmake.NOLF;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Build\GTest\internal_deps.id.NOLF;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Build\GTest\types.info.NOLF;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestConfig.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestConfigVersion.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestTargets-debug.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestTargets-release.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestTargets.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\config.cmake;C:\Users\kurtg\.hunter\_Base\Cache\meta\c2ce1f0\GTest\1.8.1\152b849\a37fba7\4830b34\e5fa44f\basic-deps.info.NOLF;C:\Users\kurtg\.hunter\_Base\Cache\meta\c2ce1f0\GTest\1.8.1\152b849\a37fba7\4830b34\e5fa44f\deps.info-TEMP.NOLF;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_add_package.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_add_version.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_apply_copy_rules.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_apply_gate_settings.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_assert_empty_string.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_assert_not_empty_string.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_cache_run.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_cache_server_password.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_cacheable.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_calculate_config_sha1.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_calculate_self.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_calculate_toolchain_sha1.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_check_download_error_message.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_check_flush_needed.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_cmake_args.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_config.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_args_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_cache_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_cache_meta_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_dependency_entry.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_deps_info.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_download.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_download_cache_meta_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_download_cache_raw_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_download_server_url.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_error_page.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_fatal_error.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_final_config.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_finalize.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_find_licenses.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_find_stamps.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_flush_cache_variables.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_cacheable.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_cmake_args.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_configuration_types.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_git_executable.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_keep_package_sources.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_package_deps.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_package_deps_recurse.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_package_sha1.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_package_url.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_passwords_path.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_project_files_to_load.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_http_password.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_init_not_found_counter.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_internal_error.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_jobs_number.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_load_from_cache.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_lock_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_make_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_pack_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_pack_git_self.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_pack_git_submodule.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_parse_cmake_args_for_keyword.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_patch_unrelocatable_text_files.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_pick_scheme.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_print_cmd.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_private_data_password.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_read_http_credentials.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_register_dependency.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_sanity_checks.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_save_to_cache.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_set_config_location.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_setup_msvc.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_sleep_before_download.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_status_debug.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_status_print.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_unpack_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_unsetvar.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_upload_cache.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_upload_password.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_upload_single_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_upload_to_custom_server.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_user_error.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\projects\GTest\hunter.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\schemes\url_sha1_cmake.cmake.in;C:\crypto\FINALMINERS\ethash\cmake\cable\defaults\HunterCacheServers-passwords.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\crypto\FINALMINERS\ethash\build\test\unittests\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/crypto/FINALMINERS/ethash/test/unittests/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/crypto/FINALMINERS/ethash -BC:/crypto/FINALMINERS/ethash/build --check-stamp-file C:/crypto/FINALMINERS/ethash/build/test/unittests/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeFindDependencyMacro.cmake;C:\Program Files\CMake\share\cmake-3.20\Modules\CMakeParseArguments.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Build\GTest\args.cmake.NOLF;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Build\GTest\internal_deps.id.NOLF;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Build\GTest\types.info.NOLF;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestConfig.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestConfigVersion.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestTargets-debug.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestTargets-release.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\Install\lib\cmake\GTest\GTestTargets.cmake;C:\Users\kurtg\.hunter\_Base\18e57a4\c2ce1f0\2e6dac8\config.cmake;C:\Users\kurtg\.hunter\_Base\Cache\meta\c2ce1f0\GTest\1.8.1\152b849\a37fba7\4830b34\e5fa44f\basic-deps.info.NOLF;C:\Users\kurtg\.hunter\_Base\Cache\meta\c2ce1f0\GTest\1.8.1\152b849\a37fba7\4830b34\e5fa44f\deps.info-TEMP.NOLF;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_add_package.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_add_version.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_apply_copy_rules.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_apply_gate_settings.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_assert_empty_string.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_assert_not_empty_string.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_cache_run.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_cache_server_password.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_cacheable.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_calculate_config_sha1.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_calculate_self.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_calculate_toolchain_sha1.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_check_download_error_message.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_check_flush_needed.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_cmake_args.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_config.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_args_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_cache_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_cache_meta_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_dependency_entry.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_create_deps_info.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_download.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_download_cache_meta_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_download_cache_raw_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_download_server_url.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_error_page.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_fatal_error.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_final_config.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_finalize.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_find_licenses.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_find_stamps.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_flush_cache_variables.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_cacheable.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_cmake_args.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_configuration_types.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_git_executable.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_keep_package_sources.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_package_deps.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_package_deps_recurse.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_package_sha1.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_package_url.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_passwords_path.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_get_project_files_to_load.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_http_password.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_init_not_found_counter.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_internal_error.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_jobs_number.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_load_from_cache.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_lock_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_make_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_pack_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_pack_git_self.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_pack_git_submodule.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_parse_cmake_args_for_keyword.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_patch_unrelocatable_text_files.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_pick_scheme.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_print_cmd.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_private_data_password.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_read_http_credentials.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_register_dependency.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_sanity_checks.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_save_to_cache.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_set_config_location.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_setup_msvc.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_sleep_before_download.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_status_debug.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_status_print.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_unpack_directory.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_unsetvar.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_upload_cache.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_upload_password.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_upload_single_file.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_upload_to_custom_server.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\modules\hunter_user_error.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\projects\GTest\hunter.cmake;C:\Users\kurtg\.hunter\_Base\Download\Hunter\0.23.224\18e57a4\Unpacked\cmake\schemes\url_sha1_cmake.cmake.in;C:\crypto\FINALMINERS\ethash\cmake\cable\defaults\HunterCacheServers-passwords.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\crypto\FINALMINERS\ethash\build\test\unittests\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\crypto\FINALMINERS\ethash\test\unittests\helpers.hpp" />
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\test\unittests\test_bit_manipulation.cpp" />
+    <ClInclude Include="C:\crypto\FINALMINERS\ethash\test\unittests\test_cases.hpp" />
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\test\unittests\test_ethash.cpp" />
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\test\unittests\test_keccak.cpp" />
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\test\unittests\test_kiss.cpp" />
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\test\unittests\test_managed.cpp" />
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\test\unittests\test_primes.cpp" />
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\test\unittests\test_progpow.cpp" />
+    <ClCompile Include="C:\crypto\FINALMINERS\ethash\test\unittests\test_version.cpp">
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TEST_PROJECT_VERSION="0.6.0";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TEST_PROJECT_VERSION="0.6.0";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">TEST_PROJECT_VERSION="0.6.0";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">TEST_PROJECT_VERSION="0.6.0";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <AppxManifest Include="C:\crypto\FINALMINERS\ethash\build\test\unittests\ethash-test.dir\package.appxManifest">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+    <Image Include="C:\crypto\FINALMINERS\ethash\build\test\unittests\ethash-test.dir\SmallLogo.png" />
+    <Image Include="C:\crypto\FINALMINERS\ethash\build\test\unittests\ethash-test.dir\SmallLogo44x44.png" />
+    <Image Include="C:\crypto\FINALMINERS\ethash\build\test\unittests\ethash-test.dir\Logo.png" />
+    <Image Include="C:\crypto\FINALMINERS\ethash\build\test\unittests\ethash-test.dir\StoreLogo.png" />
+    <Image Include="C:\crypto\FINALMINERS\ethash\build\test\unittests\ethash-test.dir\SplashScreen.png" />
+    <None Include="C:\crypto\FINALMINERS\ethash\build\test\unittests\ethash-test.dir\Windows_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\crypto\FINALMINERS\ethash\build\ZERO_CHECK.vcxproj">
+      <Project>{CBF009E4-2DC4-3811-9953-86F5EA8857AD}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\crypto\FINALMINERS\ethash\build\lib\ethash\ethash.vcxproj">
+      <Project>{FB2D79E5-A826-3C59-BD3B-1A0A3E62316F}</Project>
+      <Name>ethash</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\crypto\FINALMINERS\ethash\build\lib\keccak\keccak.vcxproj">
+      <Project>{46A64483-D594-3FA9-AD3E-88FC288EA1EF}</Project>
+      <Name>keccak</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

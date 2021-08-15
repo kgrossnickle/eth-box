@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+	xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"	xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+	xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+	IgnorableNamespaces="uap mp">
+
+	<Identity Name="670DBB7F-F69C-3E43-991B-BB8AF1EB3E71" Publisher="CN=CMake" Version="1.0.0.0" />
+	<mp:PhoneIdentity PhoneProductId="670DBB7F-F69C-3E43-991B-BB8AF1EB3E71" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+	<Properties>
+		<DisplayName>ethash-bench</DisplayName>
+		<PublisherDisplayName>CMake</PublisherDisplayName>
+		<Logo>ethash-bench.dir\StoreLogo.png</Logo>
+	</Properties>
+	<Dependencies>
+		<TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
+	</Dependencies>
+	<Resources>
+		<Resource Language="x-generate" />
+	</Resources>
+	<Applications>
+		<Application Id="App" Executable="ethash-bench.exe" EntryPoint="ethash-bench.App">
+			<uap:VisualElements
+				DisplayName="ethash-bench"
+				Description="ethash-bench"
+				BackgroundColor="#336699"
+				Square150x150Logo="ethash-bench.dir\Logo.png"
+				Square44x44Logo="ethash-bench.dir\SmallLogo44x44.png">
+				<uap:SplashScreen Image="ethash-bench.dir\SplashScreen.png" />
+			</uap:VisualElements>
+		</Application>
+	</Applications>
+</Package>
