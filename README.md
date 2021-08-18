@@ -22,12 +22,14 @@ https://www.howtogeek.com/703443/how-to-put-your-xbox-series-x-or-s-into-develop
 Then you will need to connect via WIFI or build the appx package and put on xbox. This doc covers it well
 https://docs.microsoft.com/en-us/windows/uwp/xbox-apps/development-environment-setup
 # Bugs
-The Bound for the miner is a hash that begins with 00000000XXXXXXXXXXXXX (8 preceding 0s example: 00000000b9de3b6e15924387fde5fa0a13a2fb4725a30ffbb597e4721da28f36). However, most pools have a less strict hash than this so you will miss out on blocks _significantly_ hurting your return from the pool. The fix is to add a boundary checker to ETHashMine.hlsl ~ line 469. Currently it is
+1.The Bound for the miner is a hash that begins with 00000000XXXXXXXXXXXXX (8 preceding 0s example: 00000000b9de3b6e15924387fde5fa0a13a2fb4725a30ffbb597e4721da28f36). However, most pools have a less strict hash than this so you will miss out on blocks _significantly_ hurting your return from the pool. The fix is to add a boundary checker to ETHashMine.hlsl ~ line 469. Currently it is
  ```if (concat[0].x == 0) {```
  where concat[0] stores the 8 first digits, so only if there all zero do we report a solution.
  this _should_ be
  ```if (concat[0].x < boundary)```
  but since concat is in little endian this is actually super non-trivial (at least to me. Its probably trivial to some bit master).
+ 
+ 2. Some epochs are 50x slower... NO idea why. Makes 0 sense, must be some error in the HLSL code. An example error epoch is epoch 435 (seed = 37f0818a24a483c5bd9c28e7b455358ccfe14a11e3504f5290946f9e3582775c ). On my 2070 RTX , I get 17 MH/s on epoch 434 and 436 and **.32** MH/s on epoch 435, around 50x slower... 
 # Change GPU to run on
 in ```MainPage::MainPage()``` change ```miner = DXMiner(0); ``` to ```miner = DXMiner(YOUR_GPU_OR_CPU_NUM)``` where the number is the index number from the dropdown. Sorry I hardcoded this for SPEEEDDDDD and since GPU is always index 0 if yours is recognized
 # Testing
