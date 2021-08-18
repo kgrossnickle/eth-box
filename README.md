@@ -40,3 +40,6 @@ Open Mainpage.cpp
  miner.mine_forever();
  in  ```MainPage::MainPage()``` function to change the miner to run on test data so you can test speed, vs actually connect to a pool and mine.
  These lines make the miner mine forever before even showing the GUI, so you cant test speed changes without even loading the GUI.
+ 
+ # How to improve / make feasible
+ If you edit the HLSL shader code in ETHash.hlsi, ETHashGenerateDataset.hlsl and ETHashMine.hlsl you should be able to get speed improvements if your a better graphics programmer than I am. The real key is to debug what is going on in the xbox (GPU usage) which is locked to Xbox Creator program members. If you could see where the shader code is inefficient (ex. is it inefficient in UAV memory vs SRV memory vs thread size vs warp size) then update to meet max GPU performance
