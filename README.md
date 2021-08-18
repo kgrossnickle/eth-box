@@ -1,10 +1,10 @@
 # Xbox Ethereum Miner
 # Building/Running on PC
 ## Prereqs
-Win 10 --  
-Visual Studio 2019 --  
- -- VS C++ and WinRT packages ( should ask if you want to install these after git cloning) --  
- Xbox Series S, Series X or Xbox One. Might work with others though idk
+Win 10  
+Visual Studio 2019   
+VS C++ and WinRT packages ( should ask if you want to install these after git cloning)  
+Xbox Series S, Series X or Xbox One. (Might work with others? :shrug:	)
 ## Other packages needed
 1.  You need to install boost with WinRT / uwp bindings and add to Visual Studio path.
  I used vcpkg to install boost to C:\dev and so if your install location isnt C:\dev\vcpkg\installed\x64-uwp\include then you will need to change in _properties -> C/C++ -> additional include dirs_
