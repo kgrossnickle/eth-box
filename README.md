@@ -32,7 +32,7 @@ https://docs.microsoft.com/en-us/windows/uwp/xbox-apps/development-environment-s
  
  2. Some epochs are 50x slower... NO idea why. Probably some error in the HLSL code, which on error GPU code takes the maximum path to return which could be 50x slower. An example error epoch is epoch 435 (seed = 37f0818a24a483c5bd9c28e7b455358ccfe14a11e3504f5290946f9e3582775c ). On my 2070 RTX , I get 17 MH/s on epoch 434 and 436 and **.32** MH/s on epoch 435, around 50x slower... 
 # Change GPU to run on
-in ```MainPage::MainPage()``` change ```miner = DXMiner(0); ``` to ```miner = DXMiner(YOUR_GPU_OR_CPU_NUM)``` where the number is the index number from the dropdown. Sorry I hardcoded this for SPEEEDDDDD and since GPU is always index 0 if yours is recognized
+in ```MainPage::MainPage()``` change ```miner = DXMiner(0); ``` to ```miner = DXMiner(YOUR_GPU_OR_CPU_NUM)``` where the number is the index number from the dropdown from the device tab from the GUI when you run it. Sorry I hardcoded this for SPEEEDDDDD and since GPU is always index 0 so it should only cause trouble if you have more than 1
 # Testing
 Open Mainpage.cpp
  and comment out or uncomment 
