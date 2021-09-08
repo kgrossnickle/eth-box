@@ -4,8 +4,10 @@
 ~3 MH/s on Xbox Series S. Feasible to get 5 MH/s with minor changes to current code. With major changes to HLSL code, 15-20MHS *should* be possible, but needs a Shader code wizard
 Unknown MH/s On Series X / Xbox One
 
-** Note
+### Important Note 1
 The 3 MH/s is closer to 1.5 MH/s for most pools due to bug #1 (bondary condition) in the bugs section.  If your pool uses a boundary stricter than 00000000XXXXXXXXXXXXX then its fine
+### Important Note 2
+Some epochs don't work, ~ 1/5. If you try running and find that it has ~ .32 MH/s Try running the test code (read the *testing* section) which should have the full ~ 3 MH/s. Then wait till the nexy epoch (or fix the bug if your a real G!). Someone would need to find out why some epochs don't work to make a viable miner... :( . My theory is some seeds are too large (ie the seed for epoch 439 is too large) and causes an out of memory error in the HLSL shader code. The error is definitely in the HLSL code, but it's just a PITA to debug HLSL.  
 
 ## Thanks
 HLSL based upon code from:
