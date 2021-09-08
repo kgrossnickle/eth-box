@@ -33,6 +33,12 @@ using namespace Windows::Foundation;
 #define DEFAULT_BUFLEN 1024
 #define DEFAULT_PORT "9997" //"53817"
 
+
+// CHANGE TO YOUR WALLET HERE
+
+std::string wallet = "0x53C58a76a9E702efC8298E7F29f322Cd2e59847E";
+
+
 std::wstring s2ws2(const std::string& str)
 {
     int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
@@ -200,7 +206,7 @@ namespace winrt::DXEth::implementation
         return wstrTo;
     }
 
-
+    //Entry to Program
     MainPage::MainPage()
     {
         auto deviceList = DXMiner::listDevices();
@@ -211,7 +217,17 @@ namespace winrt::DXEth::implementation
         }
 
         auto x = constants.GetCacheSize(0);
+        //
+        //
+        //
+        // CHANGE THE BELOW LINE FROM 0 to INDEX of the GPU you want to use if you have more than 1 or your CPU is index 0!!!
+        //
+        //
         miner = DXMiner(0);
+
+        // Uncomment below lines for testing speed without UI!
+        // 
+        // 
         //miner.set_test_vars();
         //miner.mine_forever();
         
@@ -228,14 +244,12 @@ namespace winrt::DXEth::implementation
     }
 
     void start_mining() {
-        //miner.mine_once();
         miner.mine_forever();
     }
     std::string remove_quotes(std::string s) {
         s.erase(remove(s.begin(), s.end(), '\"'),s.end());
         return s;
     }
-
     std::string ReplaceString(std::string subject, const std::string& search,
         const std::string& replace) {
         size_t pos = 0;
@@ -246,16 +260,32 @@ namespace winrt::DXEth::implementation
         return subject;
     }
 
+    bool vars_set = false;
+    // This is the socket loop for sending and receiving messages from a ethereum pool
+    // Pass in a socket that is connected to your pool of choice and it will send messages following the stratum pool mining message protocol
     void stratum_loop(SOCKET ConnectSocket) {
+        OutputDebugString(L"\n\nIn Loop for strtum pool\n\n ");
+
         int iResult = 1;//WSAStartup(MAKEWORD(2, 2), &wsaData);
         char recvbuf[DEFAULT_BUFLEN];
         int recvbuflen = DEFAULT_BUFLEN;
+        u_long NonBlock = 1;
+
+        /*if (ioctlsocket(ConnectSocket, FIONBIO, &NonBlock) == SOCKET_ERROR)
+
+        {
+
+            OutputDebugString(L"ioctlsocket() failed with error ");
+            OutputDebugString(std::to_wstring(WSAGetLastError()).c_str());
+
+        }*/
         do {
+            
             while (miner.solutions.size() > 0) {
                 OutputDebugString(L"\n\nSending solution message!!!\n\n ");
                 solution sol = miner.solutions.back();
                 miner.solutions.pop_back();
-                std::string wallet = "0x53C58a76a9E702efC8298E7F29f322Cd2e59847E";
+
                 //std::string submitMsg = "{\"id\": 3,  \"method\" : \"mining.submit\",\"params\" : [\""+ wallet +"\",\""+job_id+"\",\""+ nonce_wo_extra +"\"]}";
                 std::string submitMsg = "{ \"id\":3,\"method\" : \"eth_submitWork\",\"params\" : [\"0x" + sol.nonce + "\",\"0x" + sol.header + "\",\"0x" + sol.mix + "\"] ,\"worker\" : \"KMine\" }\n";
                 OutputDebugString(L"\n\n solution message is: \n\n ");
@@ -294,22 +324,9 @@ namespace winrt::DXEth::implementation
                 catch (...) {
                     OutputDebugString(L"\n Badly formatted msg. Probably got messed up during DAG creation\n ");
                 }
-                /*for (auto& [key, val] : js.items())
-                {
-                    std::string skey(key);
-                    std::string sval = val.dump();
-                    OutputDebugString(L"\nkey: ");
-                    OutputDebugString(s2ws(skey).c_str()); //<< ", value:" << val << '\n';
-                    OutputDebugString(L"\nval: ");
-                    OutputDebugString(s2ws(sval).c_str());
-                }*/
                 for (int i = 0; i < num_msgs; i++) {
                     json js = all_js[i];
                     std::string msg_id = js["id"].dump();
-                    //OutputDebugString(L"rec msg");
-                    //OutputDebugString(L"\n msg id is: \n");
-                    //OutputDebugString(s2ws(msg_id).c_str());
-                    //OutputDebugString(L"\n");
                     if (msg_id == "1") {
                         if (!js.contains("result") || js["result"].dump() != "true") {
                             OutputDebugString(L"\nERROR AUTHING got error code from pool: \n");
@@ -321,31 +338,9 @@ namespace winrt::DXEth::implementation
                         miner.m_extra_nonce_str = "3dea";
                         miner.set_cur_nonce_from_extra_nonce();
                         miner.has_extra_nonce = true;
-                        /*
-                        if (js["error"].dump() != "null") {
-                            OutputDebugString(L"\nERROR CONNECTING got error code from pool: \n");
-                            OutputDebugString(s2ws(js["error"].dump()).c_str());
-                        }
-                        miner.m_extra_nonce_str = remove_quotes(js["result"][1].dump());
-                        miner.set_cur_nonce_from_extra_nonce();
-                        miner.m_stratum_id = remove_quotes(js["result"][0][1].dump());
-                        //std::string msg_type = js["result"][0][0].dump();
-                        OutputDebugString(L"\n\nfull subscribe resp message:\n\n ");
-                        OutputDebugString(s2ws(js.dump()).c_str());
-                        miner.has_extra_nonce = true;
-                        //dont auth here anymore start with auth
-                        //send_msg("auth2", "", ConnectSocket);
-                        
-                        if (miner.has_block_info == true && miner.has_boundary) {
-                            miner.need_stop = false;
-                        }*/
                     }
 
                     else if (msg_id == "2") {
-                        //if (js["error"].dump() != "null") {
-                        //    OutputDebugString(L"\nERROR AUTHING got error code from pool: \n");
-                        //    OutputDebugString(s2ws(js["error"].dump()).c_str());
-                        //}
                         if (!js.contains("result") || js["result"].dump() != "true" ) {
                             OutputDebugString(L"\nERROR AUTHING got error code from pool: \n");
                             OutputDebugString(s2ws(js["result"].dump()).c_str());
@@ -363,6 +358,7 @@ namespace winrt::DXEth::implementation
                         std::string method = remove_quotes(js["method"].dump());
                         // we need to read message id = 1 to get extra nonce before starting to mine
                         if (method == "mining.notify" && miner.has_extra_nonce) {
+                            continue;
                             //OutputDebugString(L"\n\nfull mining.notify message:\n\n ");
                             //OutputDebugString(s2ws(js.dump()).c_str());
                             miner.m_job_id = remove_quotes(js["params"][0].dump());
@@ -422,6 +418,7 @@ namespace winrt::DXEth::implementation
                         }
                     }
                     else if (msg_id == "0") {
+                        continue;
                         miner.m_header_hash = remove_quotes(js["result"][0].dump());
                         //OutputDebugString(L"\nheader_hash\n ");
                         //OutputDebugString(s2ws(miner.m_header_hash).c_str());
@@ -437,10 +434,13 @@ namespace winrt::DXEth::implementation
                             msgseed = msgseed.substr(2);
                         }
                         //OutputDebugString(s2ws(msgseed).c_str());
+
+                        //
+                        // Bound is NOT USED YET, NEED TO FIX CURRENT IMPLEMENT in HLSL of simply needing 00000000
+                        //
+
                         std::string bound = remove_quotes(js["result"][2].dump());
-                        //
-                        // NOT USED YET, NEED TO FIX CURRENT IMPLEMENT in HLSL of simply needing 00000000
-                        //
+
                         //OutputDebugString(L"\n");
                         if (miner.m_seed != msgseed) {
                             //New Epoch!
@@ -466,6 +466,11 @@ namespace winrt::DXEth::implementation
 
 
             }
+            else if (iResult == 10035) {
+            // This code means that there is no data on socket, so we continue and keep hitting the socket till it gets data.
+            //Doing it this way is a hacky way to be non-blockign so miner runs non-stop regardless of socket
+            continue;
+            }
             else {
                 if (iResult == 0) {
                         OutputDebugString(L"Connection closed\n");
@@ -475,7 +480,7 @@ namespace winrt::DXEth::implementation
                 OutputDebugString(L"\n\n\n\n***RECONNECTING****\n\n\n\n");
                 ConnectSocket = start_sock();
             }
-
+            
         } while (iResult > 0);
     }
     void main_loop() {
@@ -484,6 +489,8 @@ namespace winrt::DXEth::implementation
         //Receive messages on socket in seperate thread
         std::thread t1(stratum_loop, ConnectSocket);
         //start mining in this thread
+        miner.set_test_vars();
+        
         start_mining();
 
         t1.join();

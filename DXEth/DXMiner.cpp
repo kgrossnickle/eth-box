@@ -415,8 +415,14 @@ namespace winrt::DXEth {
 		m_header_hash = "0x214914e1de29ad0d910cdf31845f73ad534fb2d294e387cd22927392758cc334";
 		// Not used currently. The bounadry is always 8 preceding 0's as of now. Check BUGS in README
 		std::string ez_targ = "0x00ff1c01710000000000000000000000d1ff1c01710000000000000000000000";
-		m_seed = "c57b49f1a72c107689bf82dc84a90a391527434dc641d05b9ef255554a647e1b"; // seed 414
-		m_seed = "510e4e770828ddbf7f7b00ab00a9f6adaf81c0dc9cc85f1f8249c256942d61d9"; //seed = 2
+
+
+		//m_seed = "d9d0d58818ce1531e6520cb9cfa90269db10ea299745896f3aacf8824c58a365"; //436
+		
+		// epoch 435 is an error epoch. Miner crashes in GPU HLSL code for unknown reasons...
+		//m_seed = "37f0818a24a483c5bd9c28e7b455358ccfe14a11e3504f5290946f9e3582775c"; // seed 435
+
+		m_seed = "510e4e770828ddbf7f7b00ab00a9f6adaf81c0dc9cc85f1f8249c256942d61d9"; //epoch = 2
 		m_header = h256(m_header_hash);
 		m_boundary = h256(ez_targ);
 		// c231ca663a509ac5 should be solution maybe?
@@ -434,10 +440,9 @@ namespace winrt::DXEth {
 		OutputDebugString(L"\ndebug (but real) as hash target is:\n");
 		OutputDebugString(s2ws(dev::toString(m_boundary)).c_str());
 	}
+	// Converts a miner difficulty to hash boundary
 	void DXMiner::set_boundary_from_diff() {
-		//works with longs
-		//m_boundary = h256{ u256((u512(1) << 256) / m_difficulty_as_dbl) };
-		// 
+		
 		std::string targ_bound = getTargetFromDiff(m_difficulty_as_dbl);
 		OutputDebugString(L"\n\n\n\n\nTarget!!!! \n");
 		OutputDebugString(s2ws(targ_bound).c_str());
@@ -445,8 +450,6 @@ namespace winrt::DXEth {
 		m_boundary = h256(targ_bound);
 		OutputDebugString(L"\nas hash target is:\n");
 		OutputDebugString(s2ws(dev::toString(m_boundary)).c_str());
-		//float f = 2.3;
-		//m_boundary = (h256)(u256)((bigint(1) << 256) / f);
 	}
 	void DXMiner::mine(
 		int epoch,
@@ -455,29 +458,12 @@ namespace winrt::DXEth {
 		uint64_t startNonce,
 		uint64_t count
 	) {
-#ifdef WIN_PORT
-		//OutputDebugString(L"Swap chain presing !\n");
-		swapChain->Present(0, 0);
-#endif
-		//epoch = 0;
-		//double d = 7357883872081186;
-		//h256 boundary = h256{ u256((u512(1) << 256) / d) };
-		//std::string real_target = dev::getTargetFromDiff(d);
-		//OutputDebugString(L"\nreal targ:\n");
-		//OutputDebugString(s2ws(real_target).c_str());
+		// TODO() we redo the memcpy etc here for each batch which is hella innefficient.. should move mining to for or while loop or set these in globals
 		size_t hashBytes = 64;
 		size_t datasetSize = constants.GetDatasetSize(m_epoch);
 		if (count % m_batchSize) {
 			throw std::runtime_error("count must be a multiple of batch size");
 		}
-		// m_batchSize = 64;
-		/*
-		OutputDebugString(L"Total nonces run \n");
-		OutputDebugString(std::to_wstring(count).c_str());
-		OutputDebugString(L"\nbatch size \n");
-		OutputDebugString(std::to_wstring(m_batchSize).c_str());
-		OutputDebugString(std::to_wstring(m_batchSize).c_str());
-		*/
 		uint32_t numDatasetElements = datasetSize / hashBytes;
 		MineParam param = {};
 		param.numDatasetElements = numDatasetElements;
@@ -489,50 +475,20 @@ namespace winrt::DXEth {
 		memcpy(param.header, m_header.data(), m_header.size);
 		int shade_threads = 16;
 		int num_threads = (m_batchSize * 8 ) / shade_threads;
-		//num_threads = 1024 / shade_threads;
-		//num_threads = (2048 * 4) / 32;//(2048/128 ) * 2;
-		//num_threads = (256 * 64 * 64) / shade_threads;
 		auto startTime = std::chrono::high_resolution_clock::now();
-		{ // run mining
-
-
-			// Real block info:
-			// header = 	0x214914e1de29ad0d910cdf31845f73ad534fb2d294e387cd22927392758cc334
-			// target = 0xd1ff1c01710000000000000000000000d1ff1c01710000000000000000000000  IS OLD TARGET, should work?
-			// I THINK REAL TARG IS
-			//            00000000000009cb126997d6679f73dea4291ed528e8a9bebb023822bc6593fa
-			// real_nonce = 0xa022ca5f9296443f 
-			// block num = 12388085
-			// epoch num = 412 
-			// OUTPUT SHOULD BE BELOW!!!
-			// output hash should be = 4ba9c208c3b007dacf69ad05299d9b9625f49cf75892a4523e8c3df4a0c9c8a3
-
-
-
-			//start nonce = 0 epoch 412 header = 0x21 should be
-			// output = 3539b0211b2536e95cf6dfc5bbbb32663ab3652dc3d7b8b65301ec2c2ab3e27c
-
-			//for (uint64_t i = 0; i < count; i += m_batchSize) {
-			param.startNonce[0] =  ((m_cur_nonce ) & 0xFFFFFFFF);//(startNonce + i)& ((1ULL << 32) - 1); //
-			param.startNonce[1] =  ((m_cur_nonce) & 0xFFFFFFFF00000000ULL) >> 32;//(startNonce + i) >> 32;////
+		{ 
+			//Convert m_cur_nonce to hi lo format
+			param.startNonce[0] =  ((m_cur_nonce ) & 0xFFFFFFFF);
+			param.startNonce[1] =  ((m_cur_nonce) & 0xFFFFFFFF00000000ULL) >> 32;
 			check_hresult(m_d3d12ComputeCommandAllocator->Reset());
 			check_hresult(m_d3d12ComputeCommandList->Reset(m_d3d12ComputeCommandAllocator.get(), m_minePipelineState.get()));
 			m_d3d12ComputeCommandList->SetPipelineState(m_minePipelineState.get());
 			m_d3d12ComputeCommandList->SetComputeRootSignature(m_mineRootSignature.get());
 			for (size_t i = 0; i < 4; i++) {
-				//ORIG
 				m_d3d12ComputeCommandList->SetComputeRootUnorderedAccessView(i, m_datasetBuffers[i]->GetGPUVirtualAddress());
-				//SRV
-				//m_d3d12ComputeCommandList->SetComputeRootShaderResourceView(i, m_datasetBuffers[i]->GetGPUVirtualAddress());
-				//CBUFF
-				//m_d3d12ComputeCommandList->SetComputeRootShaderResourceView (i, m_datasetBuffers[i]->GetGPUVirtualAddress());
 			}
 			m_d3d12ComputeCommandList->SetComputeRootUnorderedAccessView(4, m_resultBuffer->GetGPUVirtualAddress());
 			m_d3d12ComputeCommandList->SetComputeRoot32BitConstants(5, sizeof(param) / 4, reinterpret_cast<void*>(&param), 0);
-
-			//orig = m_batchSize / COMPUTE_SHADER_NUM_THREADS
-			 //m_batchsize
-			//num_threads = 1;
 			m_d3d12ComputeCommandList->Dispatch(num_threads, 1, 1);
 			param.init = 0;
 
@@ -546,35 +502,27 @@ namespace winrt::DXEth {
 				D3D12_RESOURCE_STATE_COPY_SOURCE, D3D12_RESOURCE_STATE_COMMON));
 
 			check_hresult(m_d3d12ComputeCommandList->Close());
-			//m_d3d12ComputeCommandList->SetName(L"minercmdlist");
+
 			ID3D12CommandList* ppCommandLists[] = { m_d3d12ComputeCommandList.get() };
-			//m_d3d12ComputeCommandQueue->SetName(L"mineshader");
 			m_d3d12ComputeCommandQueue->ExecuteCommandLists(1, ppCommandLists);
 			waitForQueue(m_d3d12ComputeCommandQueue);
 
-
-			
-			//}
 		}
 		
 		auto endTime = std::chrono::high_resolution_clock::now();
 		MineResult* md = nullptr;
 		check_hresult(m_resultReadbackBuffer->Map(0, nullptr, reinterpret_cast<void**>(&md)));
-		
 
-		// end time is after map, in real prog we wont print till after we start next batch
-		//OutputDebugString(L"\ncount of nonces from res buffer \n");
-		//OutputDebugString(std::to_wstring(md[0].count).c_str());
-		//OutputDebugString(L"\n");
-		
-		//
 		bool print_debug = false;
-		for (int i = 0; i < 1; i++) {
-			/*OutputDebugString(std::to_wstring(i).c_str());
-			OutputDebugString(L" hi: ");
-			OutputDebugString(std::to_wstring(md[0].nonces[i].nonce[0]).c_str());
-			OutputDebugString(L" lo: ");
-			OutputDebugString(std::to_wstring(md[0].nonces[i].nonce[1]).c_str());*/
+		int i = 0;
+		for (i=0; i < 1; i++) {
+			if (print_debug) {
+				OutputDebugString(std::to_wstring(i).c_str());
+				OutputDebugString(L" hi: ");
+				OutputDebugString(std::to_wstring(md[0].nonces[i].nonce[0]).c_str());
+				OutputDebugString(L" lo: ");
+				OutputDebugString(std::to_wstring(md[0].nonces[i].nonce[1]).c_str());
+			}
 			uint64_t res_nonce = hi_lo_to_long_long(md[0].nonces[i].nonce[1], md[0].nonces[i].nonce[0]);
 			//OutputDebugString(L"\n");
 			if (res_nonce != 0 && res_nonce != prev_res_nonce) {
