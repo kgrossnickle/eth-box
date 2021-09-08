@@ -1,5 +1,6 @@
 # Xbox Ethereum Miner
 ![Miner Screenshot](img/miner-screenshot.png?raw=true "Miner Screenshot")
+Screenshot from ethpool for a share from the xbox miner
 ## Current State
 ~3 MH/s on Xbox Series S. Feasible to get 5 MH/s with minor changes to current code. With major changes to HLSL code, 15-20MHS *should* be possible, but needs a Shader code wizard
 Unknown MH/s On Series X / Xbox One
