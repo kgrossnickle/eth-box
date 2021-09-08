@@ -5,6 +5,11 @@ Unknown MH/s On Series X / Xbox One
 
 ** Note
 The 3 MH/s is closer to 1.5 MH/s for most pools due to bug #1 (bondary condition) in the bugs section.  If your pool uses a boundary stricter than 00000000XXXXXXXXXXXXX then its fine
+
+## Thanks
+HLSL based upon code from:
+https://github.com/gyf304/ethash-hlsl
+with some bug fixes
 # Building/Running on PC
 ## Prereqs
 Win 10  
