@@ -2,8 +2,7 @@
 ![Miner Screenshot](img/miner-screenshot.png?raw=true "Miner Screenshot")
 Screenshot from ethpool for a share from the xbox miner
 ## Current State
-~3 MH/s on Xbox Series S. Feasible to get 5 MH/s with minor changes to current code. With major changes to HLSL code, 15-20MHS *should* be possible, but needs a Shader code wizard
-Unknown MH/s On Series X / Xbox One
+~3 MH/s on Xbox Series S. Feasible to get 5 MH/s with minor changes to current code. With major changes to HLSL code, 15-20MHS *should* be possible, but needs a Shader code wizard. Currently Unknown MH/s On Series X / Xbox One
 
 ### Important Note 1
 The 3 MH/s is closer to 1.5 MH/s for most pools due to bug #1 (bondary condition) in the bugs section.  If your pool uses a boundary stricter than 00000000XXXXXXXXXXXXX then its fine
