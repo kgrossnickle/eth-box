@@ -1,3 +1,4 @@
+![Eth-Box](img/ethbox.png?raw=true "Eth-Box")
 # Xbox Ethereum Miner
 ![Miner Screenshot](img/miner-screenshot.png?raw=true "Miner Screenshot")
 Screenshot from ethpool for a share from the xbox miner
