@@ -47,6 +47,8 @@ https://www.howtogeek.com/703443/how-to-put-your-xbox-series-x-or-s-into-develop
 
 Then you will need to connect via WIFI or build the appx package and put on xbox. This doc covers it well
 https://docs.microsoft.com/en-us/windows/uwp/xbox-apps/development-environment-setup
+
+Lastly on your xbox, make sure to set the miner to "Game" mode. "App" Mode has limited GPU access
 # Change Wallet & Choosing Pool 
 Edit ```std::string wallet = "0x53C58a76a9E702efC8298E7F29f322Cd2e59847E";``` ~ line 9 of MainPage.cpp to your wallet
 
