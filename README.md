@@ -4,6 +4,8 @@ Screenshot from ethpool for a share from the xbox miner
 ## Current State
 ~3 MH/s on Xbox Series S. Feasible to get 5 MH/s with minor changes to current code. With major changes to HLSL code, 15-20MHS *should* be possible, but needs a Shader code wizard. Currently Unknown MH/s On Series X / Xbox One
 
+The code is also pretty bad and has a lot of old code in it since I made this for research purposes. Maybe someone could clean it up. But at the end of the day all that matters is the HLSL shader code if you want to make this feasible (increase the MH/s)
+
 ## Donate? :sparkling_heart: :sparkling_heart:
 Ethereum Wallet: 0x53C58a76a9E702efC8298E7F29f322Cd2e59847E
 \
