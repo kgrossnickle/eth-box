@@ -133,7 +133,7 @@ namespace winrt::DXEth {
 				OutputDebugString(dxgiAdapterDesc1.Description);
 				OutputDebugString(L"\n");
 				//orig
-				check_hresult(D3D12CreateDevice(dxgiAdapter1.get(), D3D_FEATURE_LEVEL_11_0, PUT_GENERIC_COM_PTR(m_d3d12Device)));
+				check_hresult(D3D12CreateDevice(dxgiAdapter1.get(), D3D_FEATURE_LEVEL_12_1, PUT_GENERIC_COM_PTR(m_d3d12Device)));
 
 
 				break;
@@ -421,6 +421,8 @@ namespace winrt::DXEth {
 		
 		// epoch 435 is an error epoch. Miner crashes in GPU HLSL code for unknown reasons...
 		//m_seed = "37f0818a24a483c5bd9c28e7b455358ccfe14a11e3504f5290946f9e3582775c"; // seed 435
+		m_seed = "4d9a8aba11e11cb0b8edb58e5d1b319bc9f840cd1f0223ae34f6ae6bba9fbe72";//seed 439 DOESNT WORK
+		m_seed = "3c19273e1bfdb99395769315d6b8c31dbb56417f0b83f3374c806fd18b726e71";//seed 440?? works but seed 439 doesnt??
 
 		m_seed = "510e4e770828ddbf7f7b00ab00a9f6adaf81c0dc9cc85f1f8249c256942d61d9"; //epoch = 2
 		m_header = h256(m_header_hash);

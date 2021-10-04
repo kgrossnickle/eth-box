@@ -228,8 +228,8 @@ namespace winrt::DXEth::implementation
         // Uncomment below lines for testing speed without UI!
         // 
         // 
-        //miner.set_test_vars();
-        //miner.mine_forever();
+        miner.set_test_vars();
+        miner.mine_forever();
         
     }
 
