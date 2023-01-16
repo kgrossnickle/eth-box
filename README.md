@@ -2,6 +2,8 @@
 # Xbox Ethereum Miner
 ![Miner Screenshot](img/miner-screenshot.png?raw=true "Miner Screenshot")
 Screenshot from ethpool for a share from the xbox miner
+## STATUS
+Unfortunately, discovered that this miner cant work full capcatiy without Xbox ID release since UWP games only get 1/4 of GPU. Miner should work very well AS IS with Xbox ID or any "Full Release" that can fully use GPU 
 ## Current State
 ~3 MH/s on Xbox Series S. Feasible to get 5 MH/s with minor changes to current code. With major changes to HLSL code, 15-20MHS *should* be possible, but needs a Shader code wizard. Currently Unknown MH/s On Series X / Xbox One
 
